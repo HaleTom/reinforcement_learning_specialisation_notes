@@ -38,6 +38,7 @@ At the heart of any RL system are ideas from one or two decades before now. DQN 
 
 ## Book notes
 
+
 ### 1.1 Reinforcement learning
 
 Balancing exploration and exploitation only arises as a problem in RL.
@@ -76,6 +77,29 @@ Book is concerned with deciding based on the available state, not determining th
 Evolutionary methods (genetic algorithms/programming, simulated annealing) have advantages where the agent cannot sense the whole environment state, but these methods do not learn while interacting with the environment.
 
 Model free methods have advantages where it's difficult to construct a sufficiently accurate model to be useful.  (1.5)
+
+## 2. Multi-armed Bandits
+
+RL *evaluates* actions taken, rather than SL's instructing independent of the action taken.
+
+This chapter is about learning in a single situation, or a *nonassociative* setting.
+
+2.1 $k$-armed bandits
+
+Here the reward from each bandit is taken from a stationary probability distribution.
+
+The value of an action is the mean or expected reward of taking that action.
+
+If we knew $q_\star(a)$, we would always select the action with the highest reward. But we don't, so we continually refine estimates via $Q(a)$.
+
+2.2 Action value methods
+
+Action-value methods are ways of estimating values of actions and also using these estimates to decide on the action to take.
+
+Near-greedy action selection is also known as $\epsilon$-greedy.
+
+The probability of selecting the optimal action converges to $ \gt 1-\epsilon$, as it is the sum of the greedy $1-\epsilon$ and the exploratory $\epsilon \frac 1 k$.
+
 
 
 ### Instructors
@@ -136,7 +160,15 @@ Alternatively, the agent could perform a non-greedy action, sacrificing immediat
 
 ### Estimating action values incrementally
 
-Note that the definition is for $Q_{n+1}$, so it's purpose is to inform the next action.
+Book, $\S$2.4: To simplify notation we concentrate on a single action. Let $R_i$ now denote the reward
+received *after* the $i$-th selection of this action, and let $Q_n$ denote the estimate of its action
+value *after* it has been selected n-1 times.
+
+This means that after selecting an action 2 times ($R_2$), $Q_3$ is the **expected** action value before selecting the action the 3rd time.  So Q_1 is observed when an action has been taken 0 times.
+
+Observe $Q_t$, take $a_t$, get $r_t$, update $Q_{t+1}$.
+
+Note that the definition is for $Q_{n+1}$, so it's purpose is to inform the next action, based on the sample-average that has been calculated from the rewards received $n$ times already.
 
 Understanding: the incremental update rule expands the previous average by weight ($n-1$) and the current observation by $1$, then divides by $n$ to get the new average.
 
@@ -152,25 +184,28 @@ Q_{n+1} &= \frac{1}{n} \sum_{i=1}^n R_i \\
 
 In final form, it takes the difference between the old average and the new observation, and weights it by $1 \over n$ before adding it to the mix.
 
+This still works correctly after the initial action, setting $Q_2$ to be $R_1$ by cancelling the initial state:
+$Q_2 = Q_1 + \frac 1 1 [R_1 - Q_1]$)
+
 [//]: # ( ![wk1-incremental-update-rule.png](wk1-incremental-update-rule.png)  Same as above math)
+
+In a more general form:
 
 NewEstimate $\gets$ OldEstimate + StepSize (Target - OldEstimate)
 
-(Target - OldEstimate) is called the "error in the estimate"
+(Target - OldEstimate) is called the *error* in the estimate, reduced by taking a step toward the Target.  (Target is assumed to indicate a desirable direction to move, even if noisy.)
 
 In the general case, the update rule is:
 
 $Q_n + \alpha \Big[R_n - Q_{n}\Big] \quad$ Where $\alpha \rightarrow [0,1]$.
 
-In the specific case of sample-average, we set $\alpha = \frac{1}{n}$.
+In the specific case of sample-average, we set $\alpha = \frac{1}{n}$.  If set to a constant, the estimate will never completely converge, but vary in response to the most recently received rewards, which is generally desired in the non-stationary case.
 
 #### Non-stationary problems
 
 Rather than using an average, non-stationary bandit problems have the distribution of rewards changing over time.
 
-We can weight the most recent rewards as being more useful by exponential time decay.
-
-If we set a step size, say 0.1, then the most recent rewards affect estimate more than the earlier ones.
+If we set a constant StepSize parameter $\alpha \in (0, 1]$, say 0.1, then the most recent rewards affect the action-value estimate more than the earlier ones. (Exponential time decay)
 
 ![wk1-decay-past-rewards-01.png](wk1-decay-past-rewards-01.png)
 
@@ -179,6 +214,12 @@ If we set a step size, say 0.1, then the most recent rewards affect estimate mor
 ![wk1-decay-past-rewards-02.png](wk1-decay-past-rewards-02.png)
 
 In the final sum when $i=n$, because $(1-\alpha)^0 = 1 $ becomes simply $\alpha R_n$.
+
+The weight given to $R_i$ is based on how many rewards ago ($n-i$) it was observed. $n-n$ means the latest observation, and in this case there is no reduction of $\alpha R_i$ by the $(1-\alpha)^0$ term (which term is < 1 so reduces with exponentiation).
+
+If $\alpha = 1$, then all the weight is assigned to the very last reward because of the convention of $0^0 = 1$.
+
+This is called a weighted average because the sum of all weights to $Q$ and $R$ is $1$.  Also called a *recency weighted average*.
 
 The first term shows the influence of the initialisation of $Q$ approaches 0 with more and more reward data.
 
@@ -241,11 +282,17 @@ Either the highest UCB action:
 
 We take the initial estimated value, and add an amount for exploration, where $c$ controls the amount of exploration.
 
+The more times $a$ is selected, the greater the denominator, and smaller the UCB.
+
+Conversely, if $t$ increases without $a$ being selected, the UCB increases. $ln(t)$ is unbounded, so all actions will eventualy be selected, but those selected frequently or with low estimates will be selected with decreasing frequency over time.
+
 ![wk1-UCB-formula-examples.png](wk1-UCB-formula-examples.png)
 
 ![wk1-UCB-performance-vs-epsilon-greedy.png](wk1-UCB-performance-vs-epsilon-greedy.png)
 
 Note that UCB's exploration reduces over time, whereas $\epsilon$-greedy still continues exploring to its detriment.
+
+UCB often performs well but is more difficult than $\epsilon$-greedy to extend to more general reinforcement learning problems.
 
 ### Contextual bandits for real world learning
 
