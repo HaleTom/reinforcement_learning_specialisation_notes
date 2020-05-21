@@ -6,10 +6,17 @@ Week 1, Univerity of Alberta
 Notes
 * [Zubieta's handwritten course notes](https://drive.google.com/file/d/1-QgHag8tGLf5rflYVQixIqhjdW8a-Hdt/view)
 * [FrancescoSaverioZuppichini](https://github.com/FrancescoSaverioZuppichini/Reinforcement-Learning-Cheat-Sheet) Reinforcement Learning Cheat Sheet
+* [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
 * [micahcarroll](https://micahcarroll.github.io/learning/2018/05/17/sutton-and-barto-rl.html) - Chapters 2 and 13
 * [j-kan](https://observablehq.com/@j-kan/reinforcement-learning-notes) - Chapter 3 onwards
 * [indoml](https://indoml.com/2018/02/14/study-notes-reinforcement-learning-an-introduction/#lstd) Most chapters, images generated from latex
 * [nathandesdouits](https://github.com/nathandesdouits/reinforcement-learning-notes) 1st Ed. Chapter 2 & 3 with numpy code
+
+Textbook solutions
+
+* [iamhectorotero - Chapter 1 to 3](https://github.com/iamhectorotero/rlai-exercises)
+* [LyWangPX - Chapter 3 onwards](https://github.com/LyWangPX/Reinforcement-Learning-2nd-Edition-by-Sutton-Exercise-Solutions)
+* [Weatherwax's 2008 solutions](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
 
 Possibly this:
 https://towardsdatascience.com/the-complete-reinforcement-learning-dictionary-e16230b7d24e
@@ -223,6 +230,13 @@ This is called a weighted average because the sum of all weights to $Q$ and $R$ 
 
 The first term shows the influence of the initialisation of $Q$ approaches 0 with more and more reward data.
 
+Book $\S$2.6:  Using the initial definition for $Q_{n+1}$ in the slide above, we can set the $\alpha$ term instead to: $\beta_n \doteq \frac{\alpha}{\bar{o}_n}$, where:
+
+$\bar{o}_n \doteq \bar{o}_{n-1} + \alpha(1 - \bar{o}_{n-1})$
+
+This is an exponential recency-weighted average *without initial bias*.
+
+
 ### Exploration vs Exploitation tradeoff
 
 We cannot do both simultaneously:
@@ -294,6 +308,22 @@ Note that UCB's exploration reduces over time, whereas $\epsilon$-greedy still c
 
 UCB often performs well but is more difficult than $\epsilon$-greedy to extend to more general reinforcement learning problems.
 
+### Gradient bandit algorithm
+
+We can select the most preferred action based upon a softmax:
+
+$$Pr\{A_t=a\} \doteq \frac{e^{H_t(a)}}{\sum_{b=1}^{k}e^{H_t(b)}} \doteq \pi_t(a)$$
+
+One interesting property of the softmax (Ravi verified) is that softmax of vector $v$ is the same as softmax of $v + 10$ (element wise).
+
+Where $H_1(a) = 0$. This is useful as the only thing required for any situation is the relative preference over the other possible actions. The equation for stochastic gradient ascent is given as:
+
+$$H_{t+1}(A_t) = H_t(A_t) + \alpha(R_t - \bar{R_t})(\mathbb{1}_{a = A_t} - \pi_t(a))$$
+
+$\bar R$ is the average of all rewards up to but not including time $t$, and serves as a baseline - if $R_t$ is higher, the probability of action $A_t$ is increased, and vice versa.
+
+
+
 ### Contextual bandits for real world learning
 
 Real-world online and interactive learning, rather than a model that is trained then deployed without the possibility to change.
@@ -320,11 +350,18 @@ After running for a long time, the simulation cares about the last policy.  IRL,
 * [Vowpal Wabbit](https://github.com/VowpalWabbit/vowpal_wabbit) code to do Contextual Bandits
 * [Asure personalizer](aka.ms/personalizer)  Azure's version
 
-================
+Nonassociative tasks: ones where there is no need to associate different actions with different situations. So far, the learner tries to find the best action (if stationary), or track the best action with time.
 
-$r(s,a) = \mathbb{E}\Big[ R_t \mid S_{t-1}=s, A_{t-1}=a \Big] =
-  \sum_{r \in \mathcal{R}} r \cdot p(r | s,a) =
-  \sum_{r \in \mathcal{R}} r \cdot \sum_{s' \in \mathcal{S}} p(s', r | s,a)
-$
+However, generally there is more than one situation, and the best approach is to learn a policy, mapping from situations to the best actions.
+
+Imagine that there are multiple $k$-armed bandits, and at each time the one presented changes at random, along with a clue as to its identity (but not action values).
+
+This is an example of an *associative search* task, as association of actions to the situations in which they are best is also involved, in addition to finding the best actions.  These are called contextual bandits.
+
+Contextual bandits are intermediate between the $k$-armed bandit and the full reinforcement learning problem as a policy is required, but each reward is still immediately assigned after an action.  Actions still don't affect the next situation.
+
+### Summary
+
+![wk1-method-parameter-study.png](wk1-method-parameter-study.png)
 
 [//]: # (This may be the most platform independent comment)
