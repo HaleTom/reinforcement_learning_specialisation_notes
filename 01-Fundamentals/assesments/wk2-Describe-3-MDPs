@@ -1,0 +1,68 @@
+A robot which spoon-feeds an baby
+
+States:
+Each state is comprised of:
+* How much food has been consumed by the infant
+* How much food remains in the bowl
+* How much food is on the spoon
+* The positions of the spoon, toddler's mouth, and bowl in 3D space
+* A visual representation of the toddler's face and bowl
+* Audio samples coming from a microphone
+
+Actions
+* Move spoon in 3D space
+* Create visual image on a small display (can be done multiple times per second)
+* Play sounds (eg "here comes the aeroplane")
+
+Rewards
++10 for each 1ml of baby food put into the mouth of the infant
+-100 per minute of time elapsed (prioritise fast feeding)
+-99999 for touching any other part of the infant than the mouth
+(The maximum average total cumulative reward may well be negative)
+
+
+
+
+An agent to use a ride-on lawn-mower to safely mow a large lawn:
+
+State
+Current angle of front wheels
+Current speed (forward or backwards)
+Engine running/not state
+Knowledge of which parts of the lawn have already been mown or not
+Knowledge of boundary
+Visual signals coming from wide-angle cameras mounted on each of the 4 sides
+
+Actions:
+Start/stop engine
+Change angle of front wheels
+Accelerate / decelerate (either forward or backward)
+
+Rewards
++1 for each square metre of grass that has been mown
+-1 per minute that the engine is running
+-99999 for hitting any objects or leaving going out of bounds
+
+
+
+
+An agent to pour tea into a cup.  A human offers a cup, and the agent fills it with tea.
+Humans may not hold the cup steady, and the agent should be able to pour tea in an unstable environment, such as on an aeroplane.
+
+State:
+Knowledge of location and orientation of offered cup in 3D space
+Knowledge of the distance of the top of the tea to the lowest part of the rim of the cup.
+Position of cup gripper in 3D space, and gripping strength
+Forces applied to the cup gripper - eg human taking back the cup when filled
+
+Actions:
+Move cup gripper arm in 3D space
+Move dispenser nozzle in 3D space
+Set instantaneous flow rate of tea being dispensed
+
+Rewards
++1 for each mL of tea dispensed up until 2cm from the lowest part of the rim
+-10 for each mL of tea dispensed closer to 2cm from the lowest part of the rim
+-99999 for grabbing a human when holding the cup
+-99999 for spilling tea
+-99999 for hitting something while moving
