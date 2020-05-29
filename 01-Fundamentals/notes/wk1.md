@@ -14,6 +14,7 @@ Notes
 
 Textbook solutions
 
+* [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
 * [iamhectorotero - Chapter 1 to 3](https://github.com/iamhectorotero/rlai-exercises)
 * [LyWangPX - Chapter 3 onwards](https://github.com/LyWangPX/Reinforcement-Learning-2nd-Edition-by-Sutton-Exercise-Solutions)
 * [Weatherwax's 2008 solutions](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
