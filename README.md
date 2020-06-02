@@ -4,7 +4,7 @@ My notes from the [Reinforcement Learning Specialization (University of Alberta)
 
 They all include pretty $\LaTeX$ formulae.
 
-If above you see `$\LaTeX$` and not pretty formatted text, I recommend one of [these](https://chrome.google.com/webstore/detail/math-anywhere/gebhifiddmaaeecbaiemfpejghjdjmhc?hl=en) [two](https://chrome.google.com/webstore/detail/tex-all-the-things/cbimabofgmfdkicghcadidpemeenbffn/details) Chrome extensions.
+If above you see `$\LaTeX$` and not pretty formatted text, I recommend [this Chrome extension](https://chrome.google.com/webstore/detail/tex-all-the-things/cbimabofgmfdkicghcadidpemeenbffn/details).
 
 I have lifted text and formulae liberally from the sources listed at the top of the Week 1 notes.
 
