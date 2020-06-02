@@ -1,6 +1,6 @@
-# Introduction to Reinforcement Learning notes
+# Introduction to Reinforcement Learning Notes
 
-My notes from the [Reinforcement Learning Specialization (University of Alberta)](https://www.coursera.org/specializations/reinforcement-learning) courses.
+My notes from the [Reinforcement Learning Specialization](https://www.coursera.org/specializations/reinforcement-learning) from Coursera and the University of Alberta.
 
 They all include pretty $\LaTeX$ formulae.
 
