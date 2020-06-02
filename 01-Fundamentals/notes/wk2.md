@@ -143,7 +143,7 @@ The cumulative expected reward is (also known as the goal or return objective):
 $$ \begin{aligned}
 G_t &= R_{t+1} + \gamma R_{t+2} + \gamma^2 R_{t+3} + ... 	\\
     &= \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}
-\end{aligned} $$
+\end{aligned} \tag{3.8} $$
 
 This infinite sum is finite as long as the sequences of rewards is bounded and $0 \le \gamma \lt 1$.
 
