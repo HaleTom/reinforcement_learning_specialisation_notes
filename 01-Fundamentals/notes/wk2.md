@@ -159,6 +159,6 @@ Discounting:
 All states plus terminal states are denoted: $S^+$.
 
 Ex 3.10, proof of Eq 3.10:
-$$\begin{equation*} G_t = \sum_{k=0}^\infty y_k = lim_{n \rightarrow \infty} (1 + \gamma + \gamma^2 + ... + \gamma^n) = lim_{n \rightarrow \infty} \frac{(1 + \gamma + \gamma^2 + ... + \gamma^n) (1 - \gamma)}{(1 - \gamma)} = lim_{n \rightarrow \infty} \frac{1 - \gamma^{n+1}}{1 - \gamma} = \frac{1}{1 - \gamma} \end{equation*}$$
+$$\begin{equation*} G_t = \sum_{k=0}^\infty \gamma^k = lim_{n \rightarrow \infty} (1 + \gamma + \gamma^2 + ... + \gamma^n) = lim_{n \rightarrow \infty} \frac{(1 + \gamma + \gamma^2 + ... + \gamma^n) (1 - \gamma)}{(1 - \gamma)} = lim_{n \rightarrow \infty} \frac{1 - \gamma^{n+1}}{1 - \gamma} = \frac{1}{1 - \gamma} \end{equation*}$$
 
 [//]: # (This may be the most platform independent comment)
