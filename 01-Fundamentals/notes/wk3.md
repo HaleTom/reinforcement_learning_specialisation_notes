@@ -190,11 +190,91 @@ We can get an optimal policy with much less work from the optimal action-value f
 
 Next week:  How to compute optimal policies using Bellman's equations.
 
+### 3.4 Unified Notation for Continuing and Episodic Tasks
+
+$$G_t \doteq \sum_{k=0}^{\infty}{\gamma^{k}R_{t+k+1}} = \sum_{k = t+1}^{T}{\gamma^{k - t - 1}R_{t}}  $$
+
+This holds true for both $T = \infty$ and $\gamma = 1$, but not both.
+
+### 3.5 Policies and Value Functions
+
+Ex 3.11:
+
+$$ \mathbb{E}[R_{t+1}|s=S_t,\pi,p] = \sum_{a \in A} \pi(a|s) \cdot r(s,a) = \sum_{a \in A} \pi(a|s) \sum_{r\in R}r\sum_{s'\in S}p(s',r|s,a) $$
+
+State-value function for policy $\pi$:
+
+$$\displaystyle v_\pi(s) \doteq  \mathbb{E}_{\pi}[G_t|S_t = s] \ = \ \mathbb{E}_{\pi}\left[\sum_{k = 0}^{\infty}{\gamma^k R_{t+k+1}\Big|S_t = s}\right]$$
+
+Action-value function for policy $\pi$  (action $a$ is taken, thereafter $\pi$ is followed:
+
+$$\displaystyle q_\pi(s,a) \doteq \mathbb{E}_{\pi}[G_t, S_t = s, A_t = a] \ = \ \mathbb{E}_{\pi}\left[\sum_{k = 0}^{\infty}{\gamma^k R_{t+k+1}\Big|S_t = s, A_t = a}\right] $$
+
+Ex 3.12: Give an equation for $v_\pi$ in terms of $q_\pi$ and $\pi$:
+
+$$ v_\pi(s) = \sum_{a \in \mathbb{A}(s)}{\pi (a|s)\ q_\pi(s,a)} $$
+
+Ex 3.13: Give an equation for $q_\pi$ in terms of $v_\pi$ and the four-argument $p$:
+
+$$ \begin{align}
+q_\pi(s,a) &= r(s,a) + \gamma v_\pi(s') \\
+&= \sum_{r\in R}r\sum_{s'\in S}p(s',r|s,a) + \gamma \sum_{r \in R} p(s',r|s,a)\  v_\pi(s')
+\end{align}$$
+
+"Monte Carlo" methods involve averaging over many random samples of actual returns.
+
+#### Bellman equation for $v_\pi$
+A recursive definition of $v_\pi(s)$ is:
+
+$$ \begin{align} v_\pi(s) &\doteq \mathbb{E}[G_t \mid S_t = s] \\
+&= \mathbb{E}[R_{t+1} + \gamma G_{t+1}  \mid  S_t = s] \\
+&= \sum_{a} \pi(a|s) \sum_{s', r} p(s',r|s,a) \Big[r + \gamma\mathbb{E}_\pi\left[G_{t+1} \mid S_{t+1} = s'\right]\Big] \\
+&= \sum_{a} \pi(a|s) \sum_{s', r} p(s',r|s,a) \Big[r + \gamma v_\pi(s')\Big]
+ \end{align}$$
+
+This produces a set of linear equations, solvable for actual values.
+
+The final expression can be read easily as an expected value. It is really a sum over all values of the three variables, $a$, $s'$, and $r$.
+For each triple, we compute its probability, $\pi(a|s)\ p(s',r|s,a)$, weight the quantity in brackets by that probability, then sum over all possibilities to get an expected value.
+
+Ex 3.15: If adding constant $c$ to each reward:
+
+$$ \begin{aligned}
+G_t &= (R_{t+1}+c) + \gamma (R_{t+2}+c) + \gamma^2 (R_{t+3}+c) + ... 	\\
+    &= \sum_{k=t+1}^{\infty} \gamma^{k-t-1} R_{t} + \sum_{k=0}^T \gamma^k c \\
+    &= \sum_{k=t+1}^{\infty} \gamma^{k-t-1} R_{t} + \frac{c}{1-\gamma}
+\end{aligned}$$
+Then each reward is increased by the constant $\frac{c}{1-\gamma}$.
+
+Ex 3.16: What if it's an episodic task?
+
+I used the unified formula for both continuing and episodic tasks above, so it should be exactly the same. $0$ seems to be an arbitrary centre-point for rewards.
+
+Ex 3.17
+
+$$ \begin{align}
+q_\pi(s,a) &= \mathbb{E}_\pi\left[G_t | S_t = s, A_t = a \right] \\
+&= \sum_{s',r} p(s',r|s,a) \left[r + \gamma \ v_\pi(s')\right] \\
+&= \sum_{s',r} p(s',r|s,a) \left[r + \gamma \sum_{a'}\mathbb{E}[G_{t+1}|S_{t+1} = s']\right] \\
+&= \sum_{s',r} p(s',r|s,a) \left[r + \gamma \sum_{a'}\pi(a'|s')q_\pi(s',a')\right] \\
+\end{align}$$
+
+Ex 3.18
+
+$$v_\pi(s) = \sum_{a \in A} \pi(a|s) q_\pi(s,a)$$
+
+Ex 3.19
+
+$$ \begin{align}
+q_\pi(s, a) &= \mathbb E\left[R_{t+1}\right] + \gamma \mathbb E \left[v_\pi(S_{t+1})\right] \\
+&= \sum_{s',r} r \cdot p(s',r|s,a) + \gamma \ v_\pi(s')
+\end{align}$$
+
+$$ \begin{align}
+\end{align}$$
 
 
-
-
-## Quiz
+# Quiz
 1. S to prob actions
 2. Update
 3 True
