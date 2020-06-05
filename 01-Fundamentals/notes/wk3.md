@@ -132,7 +132,7 @@ Unlike the uniform random policy, the optimal policy won't ever choose to bump i
 
 ![wk3-determining-optimal-policy-diagram.png](wk3-determining-optimal-policy-diagram.png)
 
-To evaluate the boxed term for a given action, we only need to perform a single step lookahead at the next states and values that follow.  The branching after the action shows captures stochastic transitions to next states.
+To evaluate the boxed term for a given action, we only need to perform a single step lookahead at the next states and values that follow.  The branching after the action (below the solid circle) shows captures stochastic transitions to next states.
 
 ![wk3-choosing-argmax-a.png](wk3-choosing-argmax-a.png)
 
@@ -140,7 +140,7 @@ In this example, each action leads us deterministically to a single next state a
 
 We consider the square in green.  Given two equal maximum values, an optimal policy is free to pick either up or left with some probability.
 
-We have also verified that $v_*$ obeys the Bellman optimality equation: for the maximising actions, the RHS of the equation evaluates to 17.8, equal to the value for the state itself.
+We have also verified that $v_*$ obeys the Bellman optimality equation: for the maximising actions, the RHS of the blue equation evaluates to 17.8, equal to the value for the state itself.
 
 ![wk3-optimal-policy-determination.png](wk3-optimal-policy-determination.png)
 
@@ -164,7 +164,7 @@ $q_\pi$ is the value of selecting $a$, then afterwards following $\pi$.
 
 The Bellman state-value equation gives the value of a state as a sum over the values of all successor states and intermediate rewards.
 
-The Bellman action-value equation gives the value of a state-action pair as a sum over the values of all possible next state-action pairs and rewards.
+The Bellman action-value equation gives the value of a state-action pair as a sum over the immediate rewards and values of all possible next state-action pairs (with their included rewards).
 
 To find a policy which maximises reward, we define:
 * Optimal policies
@@ -196,10 +196,6 @@ This holds true for both $T = \infty$ and $\gamma = 1$, but not both.
 
 ### 3.5 Policies and Value Functions
 
-Ex 3.11:
-
-$$ \mathbb{E}[R_{t+1}|s=S_t,\pi,p] = \sum_{a \in A} \pi(a|s) \cdot r(s,a) = \sum_{a \in A} \pi(a|s) \sum_{r\in R}r\sum_{s'\in S}p(s',r|s,a) $$
-
 State-value function for policy $\pi$:
 
 $$\displaystyle v_\pi(s) \doteq  \mathbb{E}_{\pi}[G_t|S_t = s] \ = \ \mathbb{E}_{\pi}\left[\sum_{k = 0}^{\infty}{\gamma^k R_{t+k+1}\Big|S_t = s}\right]$$
@@ -207,6 +203,10 @@ $$\displaystyle v_\pi(s) \doteq  \mathbb{E}_{\pi}[G_t|S_t = s] \ = \ \mathbb{E}_
 Action-value function for policy $\pi$  (action $a$ is taken, thereafter $\pi$ is followed:
 
 $$\displaystyle q_\pi(s,a) \doteq \mathbb{E}_{\pi}[G_t, S_t = s, A_t = a] \ = \ \mathbb{E}_{\pi}\left[\sum_{k = 0}^{\infty}{\gamma^k R_{t+k+1}\Big|S_t = s, A_t = a}\right] $$
+
+Ex 3.11:
+
+$$ \mathbb{E}[R_{t+1}|s=S_t,\pi,p] = \sum_{a \in A} \pi(a|s) \cdot r(s,a) = \sum_{a \in A} \pi(a|s) \sum_{r\in R}r\sum_{s'\in S}p(s',r|s,a) $$
 
 Ex 3.12: Give an equation for $v_\pi$ in terms of $q_\pi$ and $\pi$:
 
@@ -239,14 +239,15 @@ A recursive definition of $q_\pi(s,a)$ is, for all $s \in \mathcal S$:
 
 $$ \begin{align}
 q_\pi(s,a) &= \mathbb{E}[R_{t+1} + \gamma G_{t+1} \mid S_t = s, A_t = a] \\
-&= \sum_{s', r} p(s',r|s,a) \Big[r + \gamma \ \mathbb{E}_\pi\left[G_{t+1} \mid S_t = s, S_{t+1} = s', A_t = a \right] \Big] \\
-&= \sum_{s', r} p(s',r|s,a) \left[r + \gamma \sum_{a'} \pi(a'|s') \ \mathbb{E}_\pi \left[ G_{t+1} \mid S_{t+1} = s', A_{t+1} = a' \right] \right]  \\
-&= \sum_{s', r} p(s',r|s,a) \left[ r + \gamma \sum_{a'} \pi(a|s) \ q_{\pi}(s', a') \right] \\
+&= \sum_{s', r} p(s',r|s,a)  \Big[ r + \gamma \ \mathbb{E}_\pi\left[s' \right] \Big] \\
+&= \sum_{s', r} p(s',r|s,a) \left[ r + \gamma \sum_{a'} \pi(a'|s') \ q_{\pi}(s', a') \right] \\
  \end{align}$$
+
+The final equation replaces the expected value of $s'$ with the action-values 
 
 Both equations produce a set of linear equations, solvable for actual values.
 
-Ex 3.15: If adding constant $c$ to each reward:
+Ex 3.15: If adding constant $c$ to each reward in a continuing task:
 
 $$ \begin{aligned}
 G_t &= (R_{t+1}+c) + \gamma (R_{t+2}+c) + \gamma^2 (R_{t+3}+c) + ... 	\\
@@ -254,11 +255,11 @@ G_t &= (R_{t+1}+c) + \gamma (R_{t+2}+c) + \gamma^2 (R_{t+3}+c) + ... 	\\
     &= \sum_{k=t+1}^{\infty} \gamma^{k-t-1} R_{t} + \frac{c}{1-\gamma}
 \end{aligned}$$
 
-Then each reward is increased by the constant $\frac{c}{1-\gamma}$.
+Then each state's reward is increased (or decreased if negagtive) uniformly by the constant $\frac{c}{1-\gamma}$.  The descending ordering of states by reward under any given policy will remain the same, so the optimal actions under that policy won't change.
 
 Ex 3.16: What if it's an episodic task?
 
-I used the unified formula for both continuing and episodic tasks above, so it should be exactly the same. $0$ seems to be an arbitrary centre-point for rewards.
+Adding a positive constant will make longer episodes more advantageous, adding a negative constant will make shorter episodes more advantageous.
 
 Ex 3.17
 
@@ -320,52 +321,18 @@ This solution is rarely directly useful. It is akin to an exhaustive search, loo
 
 However, many reinforcement learning methods can be clearly understood as approximately solving the Bellman optimality equation, using actual experienced transitions in place of knowledge of the expected transitions.
 
+# 3.7 Optimality and approximation
+
+For the kinds of tasks in which we are interested, optimal policies can be generated only with extreme computational cost.
+
+In many cases of practical interest, there are far more states than could possibly be entries in a table. In these cases the functions must be approximated, using some sort of more compact parameterized function representation.
+
+The online nature of reinforcement learning makes it possible to approximate optimal policies in ways that put more e↵ort into learning to make good decisions for frequently encountered states, at the expense of less effort for infrequently encountered states. This is one key property that distinguishes reinforcement learning from other
+approaches to approximately solving MDPs.
+
 $$ \begin{align}
 \end{align}$$
 
-# Questions:  How does $q_*$ cache results?
-
-Add exercies up to approx 3.29.
-
-Review q pi
-
-Adding a constant to all rewards  difference in optimal policies in episodic, no change for policies in continuing tasks.
-
-
-
-The optimal state-value function is unique in every finite MDP.
-
-The Bellman optimality equation is actually a system of equations, one for each state, so if there are N states, then there are N equations in N unknowns. If the dynamics of the environment are known, then in principle one can solve this system of equations for the optimal value function using any one of a variety of methods for solving systems of nonlinear equations. All optimal policies share the same optimal state-value function.
-
-Adding a constant to the reward signal can make longer episodes more or less advantageous (depending on whether the constant is positive or negative).  In continuing tasks, the agent will accumulate the same amount of extra reward independent of its behaviour.
-
-We don’t need $\pi$ or $p$ to express  $v_∗$ in terms of $q_∗$. Under an optimal policy, the value of a state is the same as the values of the actions supported by the policy at that state.
-
-$\pi_*$: the probability of taking an action is constrained between 0 and 1.
-
-
-
+# Add exercies up to approx 3.29.
 
 [//]: # (This may be the most platform independent comment)
-
-# Deleteme:
-[Textbook webpage](http://incompleteideas.net/sutton/book/the-book.html)
-
-Notes
-* [Zubieta's handwritten course notes](https://drive.google.com/file/d/1-QgHag8tGLf5rflYVQixIqhjdW8a-Hdt/view)
-* [FrancescoSaverioZuppichini](https://github.com/FrancescoSaverioZuppichini/Reinforcement-Learning-Cheat-Sheet) Reinforcement Learning Cheat Sheet
-* [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
-* [micahcarroll](https://micahcarroll.github.io/learning/2018/05/17/sutton-and-barto-rl.html) - Chapters 2 and 13
-* [j-kan](https://observablehq.com/@j-kan/reinforcement-learning-notes) - Chapter 3 onwards
-* [indoml](https://indoml.com/2018/02/14/study-notes-reinforcement-learning-an-introduction/#lstd) Most chapters, images generated from latex
-* [nathandesdouits](https://github.com/nathandesdouits/reinforcement-learning-notes) 1st Ed. Chapter 2 & 3 with numpy code
-
-Textbook solutions
-
-* [iamhectorotero - Chapter 1 to 3](https://github.com/iamhectorotero/rlai-exercises)
-* [LyWangPX - Chapter 3 onwards](https://github.com/LyWangPX/Reinforcement-Learning-2nd-Edition-by-Sutton-Exercise-Solutions)
-* [Weatherwax's 2008 solutions](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
-
-Possibly this:
-https://towardsdatascience.com/the-complete-reinforcement-learning-dictionary-e16230b7d24e
-
