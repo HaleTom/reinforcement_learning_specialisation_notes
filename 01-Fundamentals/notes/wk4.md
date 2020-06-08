@@ -25,7 +25,7 @@ Policy evaluation is the task of determing $v_\pi$ for a given policy $\pi$.
 The Bellman state equation reduces the problem of finding $v_\pi$ to a system of linear equations, one for each state.
 
 "Strictly better" when comparing policies means that the area under the state-value plot is greater:
-* The policy is as good as or better, and:
+* The policy is "as good as or better" (meaning across all states), and:
 * There is at least one state where the value is greater and not equal.
 
 The goal of the control task is to modify a policy to produce one which is strictly better.
@@ -48,8 +48,6 @@ Dynamic programming solves both policy evaluation and control if we have access 
 
 Dynamic programming algorithms come from turning the Bellman equations into update rules.
 
-#### Apply iterative policy evaluation to compute value functions
-
 ![wk4-iterative-policy-evaluation-rule.png](wk4-iterative-policy-evaluation-rule.png)
 
 Instead of an equation that holds for the true value funciton, we have a procedure that we can apply until the equation holds.
@@ -58,47 +56,109 @@ A sweep is applying the above update $\forall s \in \mathcal S$.
 
 Begin with an arbitrary initialisation for the value function, called $v_0$.  Each sweep of the update rule produces a better and better approximation of $v_\pi$.
 
-When the update converges leaving the state-value function unchanged,  then we have evaluated $v_\pi$ for the current policy $\pi$.
+When the update converges (the state-value function no longer changes),  then we have evaluated $v_\pi$ for the current policy $\pi$.  This is because $v_\pi$ is the unique solution to the Bellman equation.  The only way the update could not make a change is if $v_k$ already obeys the Bellman equation.
 
-This is because $v_\pi$ is the unique solution to the Bellman equation.  The only way the update could not make a change is if $v_k$ already obeys the Bellman equation.
+When $v_{k+1} = v_k$ (equality not assignment) for all states, then replacing both terms with $v_\pi$ gives us the Bellman equation, and therefore the state-value function for policy $\pi$.
 
-When $v_{k+1} = v_k$ (equality not assignment) then replacing both terms with $v_\pi$ gives us the Bellman equation, and therefore the state-value function for policy $\pi$.
+#### Apply Iterative policy evaluation to compute value functions
 
-[//]: # ( ![wk4-bellman-vk-vkplus1.png](wk4-bellman-vk-vkplus1.png) )
+Use two arrays:
+1. $V$ stores the current state values
+2. $V'$ stores the updated state values
+3. Update $V$ with $V'$ after a full sweep.
 
-# XXXXX Up to 2:15 time in video
+Two arrays are used so that the new values can be computed from the old, without changing the old values in the process.
+
+It's also possible to use a single array, in which case some updates will use new values.  This is still guaranteed to converge, and will in fact usually converge faster, as it gets to use the newer values sooner.
+
+![wk4-gridworld-01.png](wk4-gridworld-01.png)
+
+Terminal states are top left or bottom right squares, but formally both are the same state.  The value of the terminal state is defined to be $0$.
+
+An action which would take the agent off the grid returns it to the same position.
+
+If using the 2 array update, the $V'$ values are irrelevant as they will all be updated based on $V$ before use.
+
+![wk4-iterative-policy-evaluation-pseudocode.png](wk4-iterative-policy-evaluation-pseudocode.png)
+
+After convergence, it looks like:
+
+![wk4-gridworld-converged.png](wk4-gridworld-converged.png)
 
 ### Lesson 2: Policy Iteration (Control)
 
-Understand the policy improvement theorem
+#### Understand the policy improvement theorem
 
-Use a value function for a policy to produce a better policy for a given MDP
+The Policy Improvement Theorem tells us that a greedified policy is a strict improvement (unless it was already optimal).
 
-Outline the policy iteration algorithm for finding the optimal policy
+![wk4-policy-improvement-formulae.png](wk4-policy-improvement-formulae.png)
 
-Understand “the dance of policy and value”
+In the `?` or $\pi'$ case, we select the action which is greedy based on the current policy $\pi$, (because we don't yet know $\pi_*$).  We use $v_\pi$ as we don't yet know $v_*$.
 
-Apply policy iteration to compute optimal policies and optimal value functions
+The new policy must be different to $\pi$, else...
+
+If greedy-fication doesn't change $\pi$, then $\pi$ was already optimal with respect to its value function, i.e. it was already an optimal policy.
+
+#### Use a value function for a policy to produce a better policy for a given MDP
+
+![wk4-policy-improvement-theorem.png](wk4-policy-improvement-theorem.png)
+
+The new policy must be a strict improvement to unless the policy was already optimal.
+
+#### Outline the policy iteration algorithm for finding the optimal policy
+
+![wk4-policy-iteration-process.png](wk4-policy-iteration-process.png)
+
+Above is the process for Policy Iteration.
+
+Each policy is guaranteed to be an improvement on the last (unless the last was already optimal).
+
+If each policy generated is deterministic, given that there are a finite number of deterministic policies, to the iterative improvement must eventually find an optimal policy.
+
+#### Understand “the dance of policy and value”
+
+![wk4-policy-improvement-intuition.png](wk4-policy-improvement-intuition.png)
+
+1. Evaluate $\pi_1$ $ \rightarrow v_{\pi_1}$
+2. Use $v_{\pi_1}$ to get $\pi_2$.  (Now $\pi_2$ is greedy w.r.t $v_{\pi_1}$, but $v_{\pi_1}$ no longer reflects $\pi_2$.)
+3. Evaluate $\pi_2$ $ \rightarrow v_{\pi_2}$
+4. Use $v_{\pi_2}$ to get $\pi_3$.  (Now $\pi_3$ is greedy w.r.t $v_{\pi_2}$, but $v_{\pi_2}$ no longer reflects $\pi_3$.)
+
+This continues until we reach a policy which is greedy with respect to its own value function, namely an optimal policy.
+
+![wk4-iterative-policy-evaluation-cuts-search-space.png](wk4-iterative-policy-evaluation-cuts-search-space.png)
+
+Because each step of improvement moves in the direction of "better", the search space for policies is progressively narrowed.
+
+#### Apply policy iteration to compute optimal policies and optimal value functions
+
+Alternate between evaluation and improvement until the policy doesn't improve.
 
 ### Lesson 3: Generalized Policy Iteration
 
-Understand the framework of generalized policy iteration
+#### Understand the framework of generalized policy iteration
 
-Outline value iteration, an important example of generalized policy iteration
+We don't need to strictly alternate between evaluation and improvement. Additionally, we can still retain optimality guarantees.
 
-Understand the distinction between synchronous and asynchronous dynamic programming methods
+#### Outline value iteration, an important example of generalized policy iteration
 
-Describe brute force search as an alternative method for searching for an optimal policy
+![wk4-generalised-policy-iteration-intuition.png](wk4-generalised-policy-iteration-intuition.png)
 
-Describe Monte Carlo as an alternative method for learning a value function
+We don't need to iterate all the way to an accurate state-value function, or optimal policy.
 
-Understand the advantage of Dynamic programming and “bootstrapping” over these alternative strategies for finding the optimal policy
+#### Differentiate between synchronous and asynchronous dynamic programming methods
+
+#### Describe brute force search as an alternative method for searching for an optimal policy
+
+#### Describe Monte Carlo as an alternative method for learning a value function
+
+#### Understand the advantage of Dynamic programming and “bootstrapping” over these alternative strategies for finding the optimal policy
 
 ## Value functions
 
 
 # Quiz
-1. >=
+1. \>=
 2. F
 3. T
 4. T
