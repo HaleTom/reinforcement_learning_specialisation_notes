@@ -321,7 +321,7 @@ This solution is rarely directly useful. It is akin to an exhaustive search, loo
 
 However, many reinforcement learning methods can be clearly understood as approximately solving the Bellman optimality equation, using actual experienced transitions in place of knowledge of the expected transitions.
 
-# 3.7 Optimality and approximation
+## 3.7 Optimality and approximation
 
 For the kinds of tasks in which we are interested, optimal policies can be generated only with extreme computational cost.
 
@@ -329,6 +329,14 @@ In many cases of practical interest, there are far more states than could possib
 
 The online nature of reinforcement learning makes it possible to approximate optimal policies in ways that put more e↵ort into learning to make good decisions for frequently encountered states, at the expense of less effort for infrequently encountered states. This is one key property that distinguishes reinforcement learning from other
 approaches to approximately solving MDPs.
+
+## 3.8 Summary
+
+A policy’s value functions assign to each state, or state–action pair, the expected return from that state, or state–action pair, given that the agent uses the policy.
+
+The *optimal value functions* assign to each state, or state–action pair, the largest expected return achievable by *any* policy.
+
+A policy whose value functions are optimal is an optimal policy.
 
 $$ \begin{align}
 \end{align}$$
