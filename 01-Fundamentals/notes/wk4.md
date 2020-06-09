@@ -136,26 +136,88 @@ Alternate between evaluation and improvement until the policy doesn't improve.
 
 ### Lesson 3: Generalized Policy Iteration
 
-#### Understand the framework of generalized policy iteration
-
 We don't need to strictly alternate between evaluation and improvement. Additionally, we can still retain optimality guarantees.
 
-#### Outline value iteration, an important example of generalized policy iteration
+#### Understand the framework of generalized policy iteration
 
 ![wk4-generalised-policy-iteration-intuition.png](wk4-generalised-policy-iteration-intuition.png)
 
 We don't need to iterate all the way to an accurate state-value function, or optimal policy.
 
+#### Outline value iteration, an important example of generalized policy iteration
+
+Value Iteration combines (greedy) policy evaluation and improvement into a single step.
+
+In Value Iteration, we make passes over all the states, running only one step of (greedy) policy evaluation per state, and using the greedy value to update the state-value.
+
+![wk4-value-iteration-algorithm.png](wk4-value-iteration-algorithm.png)
+The algorithm doesn't reference any particular policy, hence the name "value iteration".
+
+Instead of updating based on a fixed policy, we update based on the action that maximises the current value estimate.
+
 #### Differentiate between synchronous and asynchronous dynamic programming methods
 
-#### Describe brute force search as an alternative method for searching for an optimal policy
+Synchronous methods sweep the entire state-space in each iteration.  This can be problematic if the state space is large.
+
+Asynchronous methods may update a single state many times before another is updated once.
+
+For convergence, asynchronous methods must continue to update the values of all states.
+
+Selective updates allow asynchonous methods to propogate more quickly, e.g. by updating the states "nearby" those that have recently changed value.  This is useful when the state space is very large.
 
 #### Describe Monte Carlo as an alternative method for learning a value function
 
-#### Understand the advantage of Dynamic programming and “bootstrapping” over these alternative strategies for finding the optimal policy
+![wk4-monte-carlo-sampling-example.png](wk4-monte-carlo-sampling-example.png)
 
-## Value functions
+We could take many different returns under $\pi$ and find their mean, which will eventually converge to the state-value.  We may need to average many returns before the estimate converges, and this would need to be done for every single state.
 
+#### Describe Monte Carlo as an alternative method for learning a value function
+
+![wk4-monte-carlo-sampling-example.png](wk4-monte-carlo-sampling-example.png)
+
+We could take many different returns under $\pi$ and find their mean, which will eventually converge to the state-value.  We may need to average many returns before the estimate converges, and this would need to be done for every single state.
+
+#### Describe brute force search as an alternative method for searching for an optimal policy
+
+There are a finite number of deterministic policies, and there always exists (at least) one optimal policy.
+
+If the policy space is small enough, then we could evaluate every policy one at a time, and pick the best one with the highest value.
+
+A deterministic policy has one action choice per state, so the total number of deterministic policies is exponential in the number of states:  $|A|^{|\mathcal S|}$.
+
+#### Understand the advantage of Dynamic programming and “bootstrapping” over Monte Carlo and brute-force
+
+Dynamic programming's advantage is that we don't need to treat the evaluation of each state as a separate problem.  We can use the other state-value estimates that we've already worked hard to compute.
+
+Using the value estimates of successor states to determine the current state's value is known as bootstrapping.  This can be much more efficient that estimating each state's value independently.
+
+Policy Improvement Theorem guarantees that policy iteration will find a sequence of better and better policies, a significant improvement over an exhaustive search.
+
+Policy Iteration is guaranteed to find an optimal policy in $\mathcal O(|\mathcal S| + |\mathcal A|)$.  (Exponentially faster than brute force = $|A|^{|\mathcal S|}$).
+
+With each step of policy iteration, the values tend to change less and less.
+
+### Curse of Dimensionality
+
+The state space grows exponentially as the number of relevant features increases.
+
+This is not an issue with Dynamic Programming, but rather an inherent complexity of real-world problems.
+
+Various techniques for mitigating this curse exist, and we will continue to deal with it for the remainder of this specialisation.
+
+### Warren Powell: Approximate dynamic programming for fleet management
+
+We want to calculate the marginal value $\bar v$ of a single driver.  This is a linear programming problem, solvable by Gurobi and cplux.
+
+Vector valued action spaces.
+
+For each driver, we drop them out of the system and calculate the system's new value.  The difference in values between the original and driver $a$ dropped value is $\hat v(a)$.
+
+The packages above give the $\hat v$ values for free.
+
+### Quiz learnings
+
+A value function is based on a policy.  If a policy is greedy w.r.t it's own value function, then it is an optimal policy (the value function reflects the always-greediness).
 
 # Quiz
 1. \>=
@@ -169,9 +231,9 @@ We don't need to iterate all the way to an accurate state-value function, or opt
 9. T
 10. Async
 11. Model
-12. -14
+12. 0
 13. -15
-14. NOT -21.   Incorrect. Try solving the equation 3/4 (x - 1) + 1/4 (-21) = x3/4(x−1)+1/4(−21)=x.
+14. -24
 
 
 $$ \begin{align}
