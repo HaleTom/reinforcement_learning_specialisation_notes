@@ -44,6 +44,8 @@ Most other RL methods can be seen as an approximation to Dynamic programming wit
 
 Dynamic programming solves both policy evaluation and control if we have access to the model's dynamics, $p$.
 
+In the iterative policy improvement case, there is an initial or last-iteration ($v_\pi$) and ($v_\pi$ and $\pi$) respectively fed into the top two processes.
+
 #### Outline the iterative policy evaluation algorithm for estimating state values under a given policy
 
 Dynamic programming algorithms come from turning the Bellman equations into update rules.
@@ -115,9 +117,13 @@ Each policy is guaranteed to be an improvement on the last (unless the last was 
 
 If each policy generated is deterministic, given that there are a finite number of deterministic policies, to the iterative improvement must eventually find an optimal policy.
 
+Instead of calculating the new policy's value function from scratch, we instead start with the value function from the old policy, which is presumably similar to the new policy's, and aids in convergence.
+
 #### Understand “the dance of policy and value”
 
 ![wk4-policy-improvement-intuition.png](wk4-policy-improvement-intuition.png)
+
+The goals interact because the two lines are not parallel. An improvement in one causes an improvement in the other.
 
 1. Evaluate $\pi_1$ $ \rightarrow v_{\pi_1}$
 2. Use $v_{\pi_1}$ to get $\pi_2$.  (Now $\pi_2$ is greedy w.r.t $v_{\pi_1}$, but $v_{\pi_1}$ no longer reflects $\pi_2$.)
@@ -144,6 +150,13 @@ We don't need to strictly alternate between evaluation and improvement. Addition
 
 We don't need to iterate all the way to an accurate state-value function, or optimal policy.
 
+Almost all reinforcement learning methods are well described as GPI, i.e. all have:
+* Identifiable policies and value functions
+* Policy always being improved with respect to the value function
+* Value function always being driven toward the value function for the policy
+
+Both processes (evaluation, improvement) stabilize only when a policy has been found that is greedy with respect to its own evaluation function. This implies that the Bellman optimality equation (4.1) holds, and thus that the policy and the value function are optimal.
+
 #### Outline value iteration, an important example of generalized policy iteration
 
 Value Iteration combines (greedy) policy evaluation and improvement into a single step.
@@ -164,6 +177,10 @@ Asynchronous methods may update a single state many times before another is upda
 For convergence, asynchronous methods must continue to update the values of all states.
 
 Selective updates allow asynchonous methods to propogate more quickly, e.g. by updating the states "nearby" those that have recently changed value.  This is useful when the state space is very large.
+
+Asynchronous algorithms also make it easier to intermix computation with real-time interaction. To solve a given MDP, we can run an iterative DP algorithm at the same time that an agent is actually experiencing the MDP. The agent’s experience can be used to determine the states to which the DP algorithm applies its updates. At the same time, the latest value and policy information from the DP algorithm can guide the agent’s decision making.
+
+To complete even one sweep of a synchronous method requires computation and memory for every state. For some problems, even this much memory and computation is impractical, yet the problem is still potentially solvable because relatively few states occur along optimal solution trajectories. Asynchronous methods and other variations of GPI can be applied in such cases and may find good or optimal policies much faster than synchronous methods can.
 
 #### Describe Monte Carlo as an alternative method for learning a value function
 
@@ -187,19 +204,23 @@ A deterministic policy has one action choice per state, so the total number of d
 
 #### Understand the advantage of Dynamic programming and “bootstrapping” over Monte Carlo and brute-force
 
-Dynamic programming's advantage is that we don't need to treat the evaluation of each state as a separate problem.  We can use the other state-value estimates that we've already worked hard to compute.
+A special property of DP methods is that all of them update estimates of the values of states based on estimates of the values of successor states. That is, they update estimates on the basis of other estimates. We call this general idea bootstrapping.  This can be much more efficient that estimating each state's value independently.
 
-Using the value estimates of successor states to determine the current state's value is known as bootstrapping.  This can be much more efficient that estimating each state's value independently.
+Dynamic programming's advantage is that we don't need to treat the evaluation of each state as a separate problem.  We can use the other state-value estimates that we've already worked hard to compute.
 
 Policy Improvement Theorem guarantees that policy iteration will find a sequence of better and better policies, a significant improvement over an exhaustive search.
 
-Policy Iteration is guaranteed to find an optimal policy in $\mathcal O(|\mathcal S| + |\mathcal A|)$.  (Exponentially faster than brute force = $|A|^{|\mathcal S|}$).
+A DP method takes a number of computational operations that is less than some polynomial function of $|\mathcal S|$ and $|\mathcal A|$.  This is exponentially faster than brute force, i.e. $\mathcal O (|A|^{|\mathcal S|})$.
 
 With each step of policy iteration, the values tend to change less and less.
 
+Monte Carlo methods don't require a model, and also don't bootstrap.
+
+Linear programming methods can also be used to solve MDPs, and in some cases their worst-case convergence guarantees are better than those of DP methods.  But linear programming methods become impractical at a much smaller number of states than do DP methods (by a factor of about 100). For the largest problems, only DP methods are feasible.
+
 ### Curse of Dimensionality
 
-The state space grows exponentially as the number of relevant features increases.
+The state space grows exponentially as the number of relevant features or state variables increases.
 
 This is not an issue with Dynamic Programming, but rather an inherent complexity of real-world problems.
 
@@ -217,23 +238,18 @@ The packages above give the $\hat v$ values for free.
 
 ### Quiz learnings
 
-A value function is based on a policy.  If a policy is greedy w.r.t it's own value function, then it is an optimal policy (the value function reflects the always-greediness).
+A value function is based on a policy.  If a policy is greedy w.r.t it's own value function, then it is an optimal policy (the value function reflects the policy's always-greediness).
 
-# Quiz
-1. \>=
-2. F
-3. T
-4. T
-5. F
-6. GPI only
-7. All
-8. F
-9. T
-10. Async
-11. Model
-12. 0
-13. -15
-14. -24
+### Reading notes
+
+All the updates done in DP algorithms are called *expected updates* because they are based on an expectation over all possible next states rather than on a sample next state.
+
+Rather than using two arrays for policy evaluation, we usually have the in-place version in mind when we think of DP algorithms.
+
+Value iteration simply turns the Bellman optimality equation (which doesn't reference $\pi$) into an update rule for $v(s) \  \forall s \in \mathcal S$.  In the formula, it uses the $\max_a$ rather than an action's expected value (under $\pi$) used in policy evaluation.  In value iteration, the evaluation part is truncated - it only looks at $v(s')$ once for each state.
+
+
+
 
 
 $$ \begin{align}

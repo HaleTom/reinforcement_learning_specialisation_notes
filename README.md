@@ -12,3 +12,4 @@ I have lifted text and formulae liberally from the sources listed at the top of 
   * [Week 1 - $K$-armed bandits](01-Fundamentals/notes/wk1.md)
   * [Week 2 - Markov Decision Processes](01-Fundamentals/notes/wk2.md)
   * [Week 3 - Value functions and Bellman Equations](01-Fundamentals/notes/wk3.md)
+  * [Week 4 - Optimal Policies with Dynamic Programming](01-Fundamentals/notes/wk4.md)
