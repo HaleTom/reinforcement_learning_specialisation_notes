@@ -38,19 +38,19 @@ Where do rewards come from?
   * Inverse reinforcement learning: trainer demonstrates desired behaviour, then learner figures out what rewards trainer must been maximising to make this behaviour optimal.  These rewards can be maximised in other settings allowing for powerful generalisation between environments.
 * Optimisation:
   * Evolutionary optimisation: if we can create a score for a high-level behaviour, an optimisation approach can search for that behaviour.  We run multiple agents pursuing a goal, and evaluate not only the result, but also the rewards which are used as an incentive for the winning behaviour.  Agents (including living ones) survive if they have good rewards and a good algorithm for maximising them, and pass those along to their offspring.
-  * Meta RL: The above is an example of learing at the meta level that creates better ways of learning at the individual level
+  * Meta RL: The above is an example of learning at the meta level that creates better ways of learning at the individual level
 
 Challenges to the hypothesis:
 * Target is something other than cumulative reward:
-  * Agent is doing something other than maximising reward.  It's not immediately apparent how to capture risk-adverse behavoiur in this framework. (Getting a lower reward on average, but lowering the possibility of the worst-case outcome).  Or maybe it can be captured by magnifying negative outcomes.
+  * Agent is doing something other than maximising reward.  It's not immediately apparent how to capture risk-adverse behaviour in this framework. (Getting a lower reward on average, but lowering the possibility of the worst-case outcome).  Or maybe it can be captured by magnifying negative outcomes.
   * Diversity in behaviour: music chooser shouldn't play my favourite song all the time.  Maybe the reward is scaled back if the behaviour has been recently taken.
 * Good match for high-level human behaviour?
   * Single-minded human reward pursuers aren't generally considered good people.
   * The goals we "should" be pursuing aren't immediately evident to us - we learn what it means to make good decisions as we age and understand ethics.  We learn more about our environment and our impacts on it.  In humans, part of this comes from discovering a deeper sense of purpose.  "Are we just identifying details of the reward functions that are already in our minds, or are we actually creating better goals for ourselves?"
 
-Maximising rewards may just be an excelent approximation of what motivates intelligent agents.
+Maximising rewards may just be an excellent approximation of what motivates intelligent agents.
 
-What if we adjust our reward function as we begin to see that the old function is missing collectable rewards, or collectng avoidable penalties?
+What if we adjust our reward function as we begin to see that the old function is missing collectable rewards, or collecting avoidable penalties?
 
 How do we see reward or penalty differently to the way that we currently see it?  What environment cues tell us that our reward function is skewed?  In me, it's usually pain/shame...  Perhaps there needs to be an input from the other agents in the environment (all "civilised" agents sharing an overall reward) - if an agent is receiving too many negatives from its environment, or causing too many, it could either shut itself down, or be disabled by its surrounding agents.
 
@@ -87,7 +87,7 @@ The value of a particular state is denoted $v_*(s)$, the total cumulative (possi
 
 ### 3.1 Agent-Environment interface
 
-An action has the enviornment transition to a next state, and the reward is associated with the *next* state's timestep.  Action $A_t$ gives $R_{t+1}$.
+An action has the environment transition to a next state, and the reward is associated with the *next* state's time step.  Action $A_t$ gives $R_{t+1}$.
 
 I.e. action $A_{t-1}$ was taken in previous state $S_{t-1}$, and the environment provided us with current $S_t$ and $R_t$.
 
@@ -149,7 +149,7 @@ This infinite sum is finite as long as the sequences of rewards is bounded and $
 
 If $\gamma = 0$, the agent only maximises the immediate return, and with $\gamma = 1$, there is no discounting, allowing for an infinite reward.
 
-If the rewards at each non-final timestep is $0$, and only a single reward $R$ is given at the final timestep, then this simplifies to $Ry^K$ where $K$ is the number of timesteps to $t_T$.
+If the rewards at each non-final time step is $0$, and only a single reward $R$ is given at the final time step, then this simplifies to $Ry^K$ where $K$ is the number of timesteps to $t_T$.
 
 Discounting:
 - eliminates infinite returns

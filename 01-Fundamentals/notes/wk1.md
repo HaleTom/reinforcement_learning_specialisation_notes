@@ -1,5 +1,5 @@
 # Fundamentals of Reinforcement Learning
-Week 1, Univerity of Alberta
+Week 1, University of Alberta
 
 [Textbook webpage](http://incompleteideas.net/sutton/book/the-book.html)
 
@@ -90,7 +90,7 @@ Model free methods have advantages where it's difficult to construct a sufficien
 
 RL *evaluates* actions taken, rather than SL's instructing independent of the action taken.
 
-This chapter is about learning in a single situation, or a *nonassociative* setting.
+This chapter is about learning in a single situation, or a *non-associative* setting.
 
 2.1 $k$-armed bandits
 
@@ -238,7 +238,7 @@ $\bar{o}_n \doteq \bar{o}_{n-1} + \alpha(1 - \bar{o}_{n-1})$
 This is an exponential recency-weighted average *without initial bias*.
 
 
-### Exploration vs Exploitation tradeoff
+### Exploration vs Exploitation trade-off
 
 We cannot do both simultaneously:
 
@@ -299,7 +299,7 @@ We take the initial estimated value, and add an amount for exploration, where $c
 
 The more times $a$ is selected, the greater the denominator, and smaller the UCB.
 
-Conversely, if $t$ increases without $a$ being selected, the UCB increases. $ln(t)$ is unbounded, so all actions will eventualy be selected, but those selected frequently or with low estimates will be selected with decreasing frequency over time.
+Conversely, if $t$ increases without $a$ being selected, the UCB increases. $ln(t)$ is unbounded, so all actions will eventually be selected, but those selected frequently or with low estimates will be selected with decreasing frequency over time.
 
 ![wk1-UCB-formula-examples.png](wk1-UCB-formula-examples.png)
 
@@ -343,7 +343,7 @@ Statistical efficiency - there's a limited number of examples, and they need to 
 
 State could be millions of pixels, but features are about what's important to make decisions.
 
-Off policy evaluation necessary for real-world.  In Contextual Bandits, some algorithms just do learning, and some also as a byproduct produce data supporting off-policy evaluation.
+Off policy evaluation necessary for real-world.  In Contextual Bandits, some algorithms just do learning, and some also as a by-product produce data supporting off-policy evaluation.
 
 After running for a long time, the simulation cares about the last policy.  IRL, every policy is important, and may be based on individual users.
 
@@ -351,7 +351,7 @@ After running for a long time, the simulation cares about the last policy.  IRL,
 * [Vowpal Wabbit](https://github.com/VowpalWabbit/vowpal_wabbit) code to do Contextual Bandits
 * [Asure personalizer](aka.ms/personalizer)  Azure's version
 
-Nonassociative tasks: ones where there is no need to associate different actions with different situations. So far, the learner tries to find the best action (if stationary), or track the best action with time.
+Non-associative tasks: ones where there is no need to associate different actions with different situations. So far, the learner tries to find the best action (if stationary), or track the best action with time.
 
 However, generally there is more than one situation, and the best approach is to learn a policy, mapping from situations to the best actions.
 
