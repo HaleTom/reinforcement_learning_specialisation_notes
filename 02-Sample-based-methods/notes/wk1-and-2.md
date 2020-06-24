@@ -355,6 +355,14 @@ Doubly robust estimators combine the best of Parametric models (low variance) an
 
 Research includes Policy optimisation, evaluation, and error bounds for confidence in deployment.
 
+### 5.8 Discounting aware Importance Sampling
+
+The sum $S$ of an infinite geometric series with $-1 \lt r \lt 1$ is given by the formula:  $S = \frac {a_1} {1 - r}$.
+
+Here, the weight of $R_{t+1}$ is 1 given by the infinite geometric series where: $a_1 = (1-\gamma)$, and $r = \gamma$.
+
+$S = \frac {1 - \gamma} {1 - \gamma} = 1$.
+
 ### Summary
 
 Monte Carlo methods average observed returns back-allocated to states.
