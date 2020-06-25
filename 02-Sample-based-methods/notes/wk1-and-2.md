@@ -120,7 +120,7 @@ Again, we bump into the exploitation / exploration trade-off.  Is the new road t
 
 In Exploring Starts, we explore every initial state-action pair of a policy.  To do this, we must be able to set the start state, which may not always be possible.  After the first action, we follow the policy.
 
-We specify that the episodes start in a state–action pair, and that every pair has a nonzero probability of being selected as the start. This guarantees that all state–action pairs will be visited an infinite number of times in the limit of an infinite number of episodes. We call this the assumption of exploring starts.  By the law of large numbers, the average action values will converge on their expected value.
+We specify that the episodes start in a state–action pair, and that every pair has a non-zero probability of being selected as the start. This guarantees that all state–action pairs will be visited an infinite number of times in the limit of an infinite number of episodes. We call this the assumption of exploring starts.  By the law of large numbers, the average action values will converge on their expected value.
 
 ![wk2-exploring-starts-pseudocode.png](wk2-exploring-starts-pseudocode.png)
 
@@ -128,9 +128,9 @@ The last line of the loop is the policy improvement step.
 
 Interestingly, the textbook says that convergence has not been formally proven, but it works in practice.
 
-The most common alternative approach to assuring that all state–action pairs are encountered is to enforce exploration by considering only policies that are stochastic with a nonzero probability of selecting all actions in each state (eg $\epsilon$-greedy).
+The most common alternative approach to assuring that all state–action pairs are encountered is to enforce exploration by considering only policies that are stochastic with a non-zero probability of selecting all actions in each state (eg $\epsilon$-greedy).
 
-### Understand how to use monte carlo methods to implement a GPI algorithm.
+### Understand how to use Monte Carlo methods to implement a GPI algorithm.
 
 ![wk2-monte-carlo-GPI-01.png](wk2-monte-carlo-GPI-01.png)
 
@@ -184,13 +184,13 @@ $Q$-learning (later lessons) allows us to learn the optimal policy.
 
 ## Lesson 4: Off-policy learning for prediction
 
-All learning control methods face a dilemma: They seek to learn action values conditional on subsequent *optimal* behavior, but they need to behave non-optimally in order to explore all actions (to *find* the optimal actions). How can they learn about the optimal policy while behaving according to an exploratory policy? The on-policy approach in the preceding section is actually a compromise—it learns action values not for the optimal policy, but for a near-optimal policy that still explores.
+All learning control methods face a dilemma: They seek to learn action values conditional on subsequent *optimal* behaviour, but they need to behave non-optimally in order to explore all actions (to *find* the optimal actions). How can they learn about the optimal policy while behaving according to an exploratory policy? The on-policy approach in the preceding section is actually a compromise—it learns action values not for the optimal policy, but for a near-optimal policy that still explores.
 
 On-policy methods attempt to evaluate or improve the policy that is used to make decisions, whereas off-policy methods evaluate or improve a policy different to that used to generate the data.
 
 In the on-policy learning implicitly discussed so far, the behaviour policy is equal to the target policy.
 
-Off-policy methods require additional concepts and notation, and because the data is due to a different policy, off-policy methods are often of greater variance and are slower to converge. On the other hand, off-policy methods are more powerful and general. They include on-policy methods as the special case in which the target and behavior policies are the same.
+Off-policy methods require additional concepts and notation, and because the data is due to a different policy, off-policy methods are often of greater variance and are slower to converge. On the other hand, off-policy methods are more powerful and general. They include on-policy methods as the special case in which the target and behaviour policies are the same.
 
 Apart from addressing the exploration trade-off, learning from demonstration and parallel learning are other examples of off-policy learning.
 
@@ -222,7 +222,7 @@ In this section, we consider only the prediction / evaluation problem, given an 
 
 ### Understand importance sampling
 
-We apply importance sampling to off-policy learning by weighting returns according to the relative probability of their trajectories occurring under the target and behavior policies, called the *importance-sampling ratio*.
+We apply importance sampling to off-policy learning by weighting returns according to the relative probability of their trajectories occurring under the target and behaviour policies, called the *importance-sampling ratio*.
 
 The probability of a trajectory under $\pi$ is:
 
@@ -233,7 +233,7 @@ P\{A_t, S_{t+1}, & A_{t+1}, ... ,S_T | S_t, A_{t:T-1} \sim \pi\} \\
 & = \prod_{k=t}^{T-1} \pi(A_k|S_k)p(S_{k+1}|S_k, A_k)
 \end{align} $$
 
-The importance sampling ratio is the relative probability of the trajectory under the target and behavior policies:
+The importance sampling ratio is the relative probability of the trajectory under the target and behaviour policies:
 
 $$
 \begin{align}
