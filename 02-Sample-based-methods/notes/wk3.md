@@ -227,19 +227,6 @@ Lesson 5: Course wrap-up
 
 # XXXXXXXXXXX
 
-# Quiz
-1 Pred
-2 DP, TD
-3 DP TD do not
-4 Mote Carlo: G_t, TD0: V(S_{t+1})
-5 All, NO MC continuing
-6 both 3 terms
-7 a0 b1 b0 T  0.5 0.0   
-8 MC targets generally have higher variance while TD(0) targets usually have lower variance.  (2 2 2)
-9 ??
-10 T
-11 TD online MC offline
-
 [Textbook webpage](http://incompleteideas.net/sutton/book/the-book.html)
 
 Notes
