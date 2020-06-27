@@ -2,6 +2,8 @@
 
 # Week 3: Temporal Difference Learning Methods for Prediction
 
+The differences between DP, MC, and TD are primarily in the prediction part of generalised policy iteration (GPI).
+
 TD learning is the most central and novel idea in RL.
 
 The special cases of TD methods introduced in chapter 6 should rightly be called one-step, tabular, model-free TD methods.
@@ -21,13 +23,22 @@ The 2nd formula can be used to for an online update to the previous value of a s
 
 Note the LHS of the red box is drawn over the `[` (right square bracket)
 
-But $G_t$ is the return from a full episode, meaning that we can't (yet) learn incrementally inside an episode.
+But $G_t$ (the MC update target) is the return from a full episode, meaning that we can't (yet) learn incrementally inside an episode.
 
 ![wk3-recursive-state-value-formula.png](wk3-recursive-state-value-formula.png)
 
 Above we replace $G_{t+1}$ with a recursively-defined value from $v$.
 
 The value of the next state is a stand-in for the value of the return until the end of the episode.  We don't need to wait until the end of the episode, but we do need to wait until the next step.
+
+* The MC target is an estimate of the expected value by averaging samples
+* The DP target is an estimate because $v_\pi(S_{t+1})$ is not known
+* The TD target is an estimate for both reasons: a sample of the expected value of the reward, and the current estimate of $V_\pi(S_{t+1})$ rather than the true $v_\pi$.
+
+Like with MC, the update is a sample update, based on a single observed next state, unlike DP's update which is based on the expected value from the complete probability distribution of next states.
+
+MC targets generally have higher variance while TD(0) targets usually have lower variance.
+
 
 ### Temporal Difference Error
 
@@ -37,7 +48,12 @@ The highlighted terms are called the *TD error*, or $\delta_t$.  The first two o
 
 TD updates its estimate of one state towards its own estimate of the next state.  As the estimated value of the next state improves, so does our TD target.
 
+The TD error is depends on the next state and reward, and is only able to be calculated one step later in time.
+
+
 ### TD(0) algorithm
+
+TD(0) is called one-step TD, and is a special case of TD($\lambda$) and $n$-step TD.
 
 ![wk3-1-step-TD.png](wk3-1-step-TD.png)
 
@@ -94,9 +110,11 @@ Temporal difference learning is an important topic in both AI and in neuroscienc
 
 Like DP, TD can bootstrap.  Like MC, TD can learn directly from experience.
 
-#### Understand the benefits of learning online with TD
-
 Unlike with MC, we don't need to wait until the end of an episode - we can update the value for the previous state as soon as we transition and observe the reward and next state.
+
+Thus, TD can be used in continuing tasks, but MC can't.
+
+MC must ignore or discount episodes where experimental actions are taken.  TD learns from each and every transition, regardless of the subsequent actions taken.
 
 Unlike DP, a model of the environment is is not required
 
@@ -108,11 +126,13 @@ TD asymptotically converges to the correct predictions, and usually does so fast
 
 With MC, the final return propagates back all the way to the beginning (discounted by $\gamma$).
 
-With TD, the update is only based on the difference between the estimated previous and discounted next-state values, and the return.
+With TD, the update is only based on the difference between the estimated previous and discounted next-state values, and the return. Return that is only available at the end of an episode propagates toward earlier states one state per episode.
 
 ![wk3-RMS-error-TD-vs-MC.png](wk3-RMS-error-TD-vs-MC.png)
 
 TD learned quicker and achieved a better final error.
+
+TD generally converges faster than MC.
 
 We could use a decaying $\alpha$ to achieve even better results.
 
@@ -127,6 +147,62 @@ In the 80s, the advances in RL got overshadowed by the advances in supervised le
 Sutton hints at much behaviourist learning being lost, and a superpower coming from his understanding of the behaviourists, including the idea of TD learning.
 
 Barto talks about intrinsic motivation in terms of research, rather than the nomadic researchers that flit from one hot topic to another.  Utility was not the driving force of the research, even though the utility turned out to be massive.
+
+## Textbook notes
+
+### 6.1 TD prediction
+
+The MC error can be written as a sum of TD errors:
+
+$$\displaystyle G_t - V(S_t) = \sum_{k=t}^{T-1} \gamma^{k-t} \delta_k $$
+
+This assumes $V$ is not updated during the episode, but if the step size is small it will still hold approximately.
+
+### 6.3 TD(0) Batch Updating; Optimality
+
+In batch learning, all the recorded data is presented as a whole batch, after which $V$ is updated, until the method converges on an answer.
+
+Updates are only done to $V$ after all data has been presented, with the incremental updates at each time step being accumulated until the end when $V$ is updated en masse.
+
+TD(0) batch updating converges deterministically to a single answer regardless of the choice of $\alpha$ (as long as it is sufficiently small).
+
+MC with constant $\alpha$ also converges deterministically under the same conditions, but to a different answer.
+
+Under normal updating the methods do not move all the way to their respective batch answers, but in some sense they take steps in these directions.
+
+Under batch training, constant-$\alpha$ MC converges to values, $V(s)$, that are sample averages of the actual returns experienced after visiting each state $s$.  These are optimal estimates in the sense that they minimize the mean-squared error from the actual returns in the training set.
+
+$${\displaystyle \operatorname {MSE} ={\frac {1}{n}}\sum _{i=1}^{n}(y_{i}-{\hat {y_{i}}})^{2}.}$$
+
+Where $\hat y$ is the mean value.
+
+TD gets a lower error when measured by RMS error averaged over states.
+
+$$ \displaystyle \operatorname {RMSE} ={\sqrt {\frac {\sum _{i=1}^{n}({\hat {y}}_{i}-y_{i})^{2}}{n}}}$$
+
+Batch TD(0) gives the same answer as if the data were first modelled as a MDP, and then the state-values determined by DP.
+
+Batch MC gives an answer based on the average of the backed-up observed returns only.
+
+Monte Carlo method is optimal only in a limited way, and TD is optimal in a way that is more relevant to predicting returns.
+
+MC batch updating gives a lower error based on the observed data, but TD batch updating gives a better estimate based on future expected data.
+
+Batch Monte Carlo methods always find the estimates that minimize mean-squared error on the training set, whereas batch TD(0) always finds the estimates that would be exactly correct for the maximum-likelihood model of the Markov process. In general, the maximum-likelihood estimate of a parameter is the parameter value whose probability of generating the data is greatest.
+
+Batch TD(0) converges to the certainty-equivalence estimate.
+
+A certainty-equivalence estimate is formed based on the MDP created from the observed transitions and rewards: it assumes that the underlying process was known with certainty rather than being approximated based on observations.
+
+
+Non-batch methods do not achieve either the certainty-equivalence or the minimum squared-error estimates, they can be understood as moving roughly in these directions. Nonbatch TD(0) may be faster than constant-$\alpha$ MC because it is moving toward a better estimate, even though it is not getting all the way there. At the current time nothing more definite can be said about the relative efficiency of online TD and Monte Carlo methods.
+
+My musing: is it possible to do batch replay of all observed episodes so far to get the best possible estimate for $v$, after each and every transition?  If there is enough compute, it could converge and an optimal policy determined before the time when the next action must be taken?
+
+But no: With large state spaces, it's impossible: if $n$ is the number of states, then computing the maximum-likelihood of the process takes $n^2$ memory, and computing the value function takes $n^3$ computational steps if done conventionally.
+
+What's amazing is that TD can approximate the same solution using memory no more than order $n$ and repeated computations over the training set.
+
 
 # ==========================
 
