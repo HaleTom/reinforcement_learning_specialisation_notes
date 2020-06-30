@@ -2,7 +2,7 @@
 
 # Week 4: Temporal Difference Learning Methods for Control
 
-## Sarsa
+### Sarsa
 
 ![wk4-sarsa-update.png](wk4-sarsa-update.png)
 
@@ -38,13 +38,111 @@ Q-learnng is a sample-based version of value iteration which iteratively applies
 
 Just like value iteration will converge on the optimal solution, Q-learning will also converge to optimality as long as it continues to explore and samples all regions of the state-action space.
 
-## Q-learning in the windy gridworld
+### Q-learning in the windy gridworld
 
-![]()
+Q-Learning directly learns the optimal policy's action-value function. Perhaps it is more stable - the update target is based on the max of the next action-values, so it only changes when one action is better than another.
 
-Q-Learning is thought to learn faster as the update target is based on the max of the next action-values
+Sarsa uses the next action (even if not optimal), as part of its update target.
 
+![wk4-windy-gridworld-parameter-study.png](wk4-windy-gridworld-parameter-study.png)
 
+With a smaller $\alpha = 0.1$, both perform equally (the gradients are parallel, episodes are comleted at the same rate).
+
+### How is Q-learning off-policy?
+
+How can Q-learning be off-policy without using importance sampling?
+
+![wk4-q-learning-comparison-to-sarsa.png](wk4-q-learning-comparison-to-sarsa.png)
+
+Sarsa is on-policy - it bootstraps based on the next action-value, which is determined by the current policy.  Evaluation is on the behaviour policy.
+
+Q-learning is off-policy - it bootstraps on the best next action value, which may be different to the one of the current policy.  Evaluation is on an estimate of the optimal target policy.  It learns about the best action it could take, rather than the action actually taken (which we don't need to wait to know).
+
+Whenever seeing a RL algorithm, a natural question to ask is:  "What are the target and behaviour policies?"
+
+![wk4-no-importance-sampling.png](wk4-no-importance-sampling.png)
+
+Q-learning's target policy is always greedy w.r.t. it's current values.  It's behaviour policy can be anything that continues to visit all state-action pairs during learning (eg, $\epsilon$-greedy).
+
+If Q-learning is off-policy, why don't we see importance sampling ratios?  It's because the agent is estimating action values with a known policy.  It doesn't need importance sampling ratios to correct for the difference in action selection.  The agent can use $Q(S_{t+1}, a')$ and $\pi(a'|S_{t+1})$ to calculate an expected return.  Q-learning uses this technique to learn off-policy.  All non-maximal actions have probability $0$, so the expected return of a state is the same as the maximal action-value from that state.
+
+![wk4-sarsa-vs-Q-episode-rewards.png](wk4-sarsa-vs-Q-episode-rewards.png)
+
+Q-learning doesn't alternate between evaluation and improvements GPI steps, but rather learns the optimal policy directly.
+
+There are some subtleties that make this less desirable in some specific situations.
+
+Q-learning learns an optimal policy.  The optimal policy walks next to the cliff, but an exploratory action can give a hefty -100 reward.
+
+Sarsa learns about its current policy, and takes into account $\epsilon$\-greedy action selection, and thus learns a longer but more reliable path further from the cliff.  Sarsa is able to reach the goal more reliably.
+
+Learning off- vs on-policy can make for differences in control, depending on the task.
+
+### Expected Sarsa
+
+![wk4-expected-sarsa-formula.png](wk4-expected-sarsa-formula.png)
+
+The Bellman equation for an action-value is a sum over next possible states, and the possible next actions in those states.
+
+Sarsa estimates the Bellman expectation by sampling the next state from the environment, and the next action from it's policy.  But the agent already knows its policy, so why bother sampling a next action?  Why not compute the expected value directly?
+
+Expected Sarsa computes a weighted sum of action-values to get the expected value of the next action.
+
+The Expected Sarsa algorihm is the same as Sarsa, with the exception of the update target using the expected estimate of the next action-value rather than a sampled action-value.
+
+There is a huge advantage in calculating the update target: Expected Sarsa has a more stable update target than Sarsa.
+
+In this example, the immediate reward is always $1$.  Both types of Sarsa start out with the true action values of the next state.
+
+Sarsa's update could be in the wrong direction, but eventually, in expectation across multiple updates, the direction is correct.
+
+In contrast, Expected Sarsa's update targets are exactly correct, and don't change the estimated values away from the true values.
+
+Expected Sarsa's update targets have a much lower variance than Sarsa's.
+
+Expected Sarsa's decreased variance comes with a downside: as the number of actions increases, the time taken to compute the expected value increases.  This average needs to be computed every time step.
+
+### Expected Sarsa in the Cliff World
+
+![wk4-expected-vs-sarsa-parameter-study-50000x.png](wk4-expected-vs-sarsa-parameter-study-50000x.png)
+
+Above, $\epsilon = 0.1$ was used in all cases.  100 episodes, averaged over 50,000 independent runs.
+
+Expected Sarsa can use larger $\alpha$ values more effectively because it explicitly averages over the randomness due to its own policy.
+
+The environment is deterministic, so Expected Sarsa's updates are deterministic for a given state and action.
+
+Sarsa's updates can vary significantly depending on the next action.
+
+![wk4-expected-vs-sarsa-parameter-study-100,000x.png](wk4-expected-vs-sarsa-parameter-study-100,000x.png)
+
+Above, after 100,000 episodes both algorithms have learned everytthing that they're going to learn.
+
+Expected Sarsa's long-term behaviour is unaffected by $\alpha$, because in this example updates are deterministic.  The step size only determines how quickly the estimates approach their target values.
+
+As $\alpha$ decreases, Sarsa's long-run performance approaches Expected Sarsa's.
+
+Summary: Expected Sarsa learns more quickly and is more robust to larger step sizes than Sarsa.
+
+Sarsa and Expected Sarsa both approximate the same Bellman action-value equation.
+
+### Expected Sarsa's off-policy learning
+
+Expected Sarsa and Q-learning both use the expectation over their target policies in their update targets, meaning that importance sampling is not required.
+
+![wk4-expected-sarsa-off-policy.png](wk4-expected-sarsa-off-policy.png)
+
+The expectation over actions is calculated independently of the action actually selected in the next state, which can be taken based on a behaviour policy different to $\pi$.
+
+### How Expected Sarsa's generalises Q-learning
+
+If the target policy $\pi$ is greedy, then only the highest value action(s) are considered in the expectation, and the $\displaystyle \sum_{a'}$ will be the $\displaystyle \max_{a'} Q(a', S_{t+1})$, giving the same result as the Q-learning formula.
+
+Q-learning is a special case of Expected Sarsa.
+
+# TODO
+
+* Write out all formulae to test understanding.
 
 
 # ======
@@ -145,10 +243,10 @@ Lesson 5: Course wrap-up
 1. Greedy
 2. optim action
 3. state
-4. optim state
+4. optim action
 5, Expected
 6. Sarsa
-7. F\
+7. T
 8. T
 9. F
 
