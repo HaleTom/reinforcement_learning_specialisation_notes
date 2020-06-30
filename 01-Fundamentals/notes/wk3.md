@@ -17,7 +17,7 @@ Particularly influential was Minsky’s paper “Steps Toward Artificial Intelli
 
 Minsky's thesis at Princeton was a RL physical system about a maze [SNARC](http://cyberneticzoo.com/mazesolvers/1951-maze-solver-minsky-edmonds-american/)
 
-Barto and Sutton wrote papers on assocative search networks (combination of association and trial and error).  Search for something that works and then remember it.  Memoisation - remember the result from last time rather than having to recompute it.
+Barto and Sutton wrote papers on associative search networks (combination of association and trial and error).  Search for something that works and then remember it.  Memoisation - remember the result from last time rather than having to recompute it.
 
 RL at its roots is memoised context-sensitive search.
 
@@ -106,7 +106,7 @@ The Bellman optimality equations relate the value of a state or state-action pai
 
 ![wk3-bellman-optimality-v-star.png](wk3-bellman-optimality-v-star.png)
 
-The sum over $\pi_*(a|s)$ can be exchanged with selection of the optimal action, as $\pi_*$ will only select (one of) the optimal action(s). (All other actions are assigned probabilty $0$.)
+The sum over $\pi_*(a|s)$ can be exchanged with selection of the optimal action, as $\pi_*$ will only select (one of) the optimal action(s). (All other actions are assigned probability $0$.)
 
 ![wk3-bellman-optimality-q-star.png](wk3-bellman-optimality-q-star.png)
 
@@ -255,7 +255,7 @@ G_t &= (R_{t+1}+c) + \gamma (R_{t+2}+c) + \gamma^2 (R_{t+3}+c) + ... 	\\
     &= \sum_{k=t+1}^{\infty} \gamma^{k-t-1} R_{t} + \frac{c}{1-\gamma}
 \end{aligned}$$
 
-Then each state's reward is increased (or decreased if negagtive) uniformly by the constant $\frac{c}{1-\gamma}$.  The descending ordering of states by reward under any given policy will remain the same, so the optimal actions under that policy won't change.
+Then each state's reward is increased (or decreased if negative) uniformly by the constant $\frac{c}{1-\gamma}$.  The descending ordering of states by reward under any given policy will remain the same, so the optimal actions under that policy won't change.
 
 Ex 3.16: What if it's an episodic task?
 
@@ -305,7 +305,7 @@ q_*(s,a) &= \mathbb{E} \left[R_{t+1} + \gamma \max_{a'} q_*(S_{t+1}, a') \big| S
 &= \sum_{s',r} p(s',r|s,a) \left[r + \gamma \max_{a'}q_*(s',a')\right] \tag{3.20}
 \end{align}$$
 
-The Bellman optimality equation is actually a system of equations, one for each state, so if there are N states, then there are N equations in N unknowns. If the dynamics of the environment are known, then in principle one can solve this system of equations for the optimal value function using any one of a variety of methods for solving systems of nonlinear equations. All optimal policies share the same optimal state-value function.
+The Bellman optimality equation is actually a system of equations, one for each state, so if there are N states, then there are N equations in N unknowns. If the dynamics of the environment are known, then in principle one can solve this system of equations for the optimal value function using any one of a variety of methods for solving systems of non-linear equations. All optimal policies share the same optimal state-value function.
 
 Any policy that is greedy with respect to the optimal evaluation functions $v_*$ or $q_*$ is an optimal policy.
 
@@ -327,7 +327,7 @@ For the kinds of tasks in which we are interested, optimal policies can be gener
 
 In many cases of practical interest, there are far more states than could possibly be entries in a table. In these cases the functions must be approximated, using some sort of more compact parameterized function representation.
 
-The online nature of reinforcement learning makes it possible to approximate optimal policies in ways that put more e↵ort into learning to make good decisions for frequently encountered states, at the expense of less effort for infrequently encountered states. This is one key property that distinguishes reinforcement learning from other
+The online nature of reinforcement learning makes it possible to approximate optimal policies in ways that put more effort into learning to make good decisions for frequently encountered states, at the expense of less effort for infrequently encountered states. This is one key property that distinguishes reinforcement learning from other
 approaches to approximately solving MDPs.
 
 ## 3.8 Summary
@@ -341,6 +341,6 @@ A policy whose value functions are optimal is an optimal policy.
 $$ \begin{align}
 \end{align}$$
 
-# Add exercies up to approx 3.29.
+### TODO: Add exercises up to approx 3.29.
 
 [//]: # (This may be the most platform independent comment)

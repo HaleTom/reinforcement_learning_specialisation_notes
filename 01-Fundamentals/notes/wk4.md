@@ -18,7 +18,7 @@ Dynamic Programming uses the Bellman equations to define converging algorithms f
 
 ![wk4-policy-evaluation.png](wk4-policy-evaluation.png)
 
-Policy evaluation is the task of determing $v_\pi$ for a given policy $\pi$.
+Policy evaluation is the task of determining $v_\pi$ for a given policy $\pi$.
 
 ![wk4-bellman-solving-theory-vs-practice.png](wk4-bellman-solving-theory-vs-practice.png)
 
@@ -52,7 +52,7 @@ Dynamic programming algorithms come from turning the Bellman equations into upda
 
 ![wk4-iterative-policy-evaluation-rule.png](wk4-iterative-policy-evaluation-rule.png)
 
-Instead of an equation that holds for the true value funciton, we have a procedure that we can apply until the equation holds.
+Instead of an equation that holds for the true value function, we have a procedure that we can apply until the equation holds.
 
 A sweep is applying the above update $\forall s \in \mathcal S$.
 
@@ -99,7 +99,7 @@ In the `?` or $\pi'$ case, we select the action which is greedy based on the cur
 
 The new policy must be different to $\pi$, else...
 
-If greedy-fication doesn't change $\pi$, then $\pi$ was already optimal with respect to its value function, i.e. it was already an optimal policy.
+If greedification doesn't change $\pi$, then $\pi$ was already optimal with respect to its value function, i.e. it was already an optimal policy.
 
 #### Use a value function for a policy to produce a better policy for a given MDP
 
@@ -176,7 +176,7 @@ Asynchronous methods may update a single state many times before another is upda
 
 For convergence, asynchronous methods must continue to update the values of all states.
 
-Selective updates allow asynchonous methods to propogate more quickly, e.g. by updating the states "nearby" those that have recently changed value.  This is useful when the state space is very large.
+Selective updates allow asynchronous methods to propagate more quickly, e.g. by updating the states "nearby" those that have recently changed value.  This is useful when the state space is very large.
 
 Asynchronous algorithms also make it easier to intermix computation with real-time interaction. To solve a given MDP, we can run an iterative DP algorithm at the same time that an agent is actually experiencing the MDP. The agent’s experience can be used to determine the states to which the DP algorithm applies its updates. At the same time, the latest value and policy information from the DP algorithm can guide the agent’s decision making.
 
@@ -248,33 +248,4 @@ Rather than using two arrays for policy evaluation, we usually have the in-place
 
 Value iteration simply turns the Bellman optimality equation (which doesn't reference $\pi$) into an update rule for $v(s) \  \forall s \in \mathcal S$.  In the formula, it uses the $\max_a$ rather than an action's expected value (under $\pi$) used in policy evaluation.  In value iteration, the evaluation part is truncated - it only looks at $v(s')$ once for each state.
 
-
-
-
-
-$$ \begin{align}
-\end{align}$$
-
 [//]: # (This may be the most platform independent comment)
-
-# Deleteme:
-[Textbook webpage](http://incompleteideas.net/sutton/book/the-book.html)
-
-Notes
-* [Zubieta's handwritten course notes](https://drive.google.com/file/d/1-QgHag8tGLf5rflYVQixIqhjdW8a-Hdt/view)
-* [FrancescoSaverioZuppichini](https://github.com/FrancescoSaverioZuppichini/Reinforcement-Learning-Cheat-Sheet) Reinforcement Learning Cheat Sheet
-* [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
-* [micahcarroll](https://micahcarroll.github.io/learning/2018/05/17/sutton-and-barto-rl.html) - Chapters 2 and 13
-* [j-kan](https://observablehq.com/@j-kan/reinforcement-learning-notes) - Chapter 3 onwards
-* [indoml](https://indoml.com/2018/02/14/study-notes-reinforcement-learning-an-introduction/#lstd) Most chapters, images generated from latex
-* [nathandesdouits](https://github.com/nathandesdouits/reinforcement-learning-notes) 1st Ed. Chapter 2 & 3 with numpy code
-
-Textbook solutions
-
-* [iamhectorotero - Chapter 1 to 3](https://github.com/iamhectorotero/rlai-exercises)
-* [LyWangPX - Chapter 3 onwards](https://github.com/LyWangPX/Reinforcement-Learning-2nd-Edition-by-Sutton-Exercise-Solutions)
-* [Weatherwax's 2008 solutions](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
-
-Possibly this:
-https://towardsdatascience.com/the-complete-reinforcement-learning-dictionary-e16230b7d24e
-
