@@ -6,11 +6,11 @@
 
 ![wk4-sarsa-update.png](wk4-sarsa-update.png)
 
-Just like TD state value evaluation required the next state to be known so that it's estimate could be looked up, with Sarsa, the next (state, action) pair must be known to be able to be looked up.
+Just like TD state value evaluation (the recall bit above) required the next state to be known so that it's estimate could be looked up, with Sarsa, the next (state, action) pair must be known for it's value to be looked up.
 
 ![wk4-sarsa-windy-gridworld.png](wk4-sarsa-windy-gridworld.png)
 
-Early episodes take many more timesteps to complete than later ones.  Around 7000 steps, the greedy policy stops improving.
+Early episodes take many more timesteps to complete than later ones.  Around 7000 steps, the $\epsilon$-greedy policy stops improving.
 
 The policy won't be optimal because it will continue to explore.
 
@@ -20,7 +20,11 @@ Sarsa would (somehow!?) learn such policies are bad during the episode, and swit
 
 Sarsa is a sample-based algorithm to solve the Bellman equation for action-values.
 
+![wk4-sarsa-algorithm.png](wk4-sarsa-algorithm.png)
+
 ### Q-learning
+
+The 2nd Sarsa equation above is actually the Bellman action-value equation. As it has a weighted sum over next-state-actions, it's a bit more like Expected Sarsa than Sarsa.
 
 Q-learning was developed in 1989 and was one of the first online RL algorithms.
 
@@ -30,9 +34,9 @@ Unlike Sarsa, it doesn't need the next action taken - it selects the best possib
 
 ![wk4-revisiting-bellman-equations.png](wk4-revisiting-bellman-equations.png)
 
-Because the optimality equation is used, $q_*$ is learned directly, eliminating the need for cycling between policy policy improvement / evaluation steps.
+Sarsa is a sample-based version of policy iteration that which uses Bellman equations for action-values, and is dependent on a fixed policy.
 
-Sarsa is a sample-based version of policy iteration that which uses Bellman equations for action-values, that each depend on a fixed policy.
+In contrast, because the *optimality* Bellman equation is used in Q-learning, $q_*$ is learned directly, eliminating the need for cycling between policy policy improvement / evaluation steps.
 
 Q-learnng is a sample-based version of value iteration which iteratively applies the Bellman optimality equation, which always improves the action-value function (unless already optimal).
 
@@ -74,9 +78,9 @@ There are some subtleties that make this less desirable in some specific situati
 
 Q-learning learns an optimal policy.  The optimal policy walks next to the cliff, but an exploratory action can give a hefty -100 reward.
 
-Sarsa learns about its current policy, and takes into account $\epsilon$\-greedy action selection, and thus learns a longer but more reliable path further from the cliff.  Sarsa is able to reach the goal more reliably.
+Sarsa learns about its current policy, and takes into account $\epsilon$-greedy action selection, and thus learns a longer but more reliable path further from the cliff.  Sarsa is able to reach the goal more reliably.
 
-Learning off- vs on-policy can make for differences in control, depending on the task.
+Learning off- vs on-policy can make for differences in control, depending on the task.  For online learning, on-policy Sarsa would do better in this case.
 
 ### Expected Sarsa
 
@@ -140,136 +144,28 @@ If the target policy $\pi$ is greedy, then only the highest value action(s) are 
 
 Q-learning is a special case of Expected Sarsa.
 
+### Summary
+
+![wk4-TD-control-agorithm-comparison.png](wk4-TD-control-agorithm-comparison.png)
+
+The 2nd row lists the update targets.
+
+Sarsa learns a sample-based version of the Bellman action-value equation to learn $q_\pi$.
+
+Expected Sarsa uses the same equation as Sarsa, but the sample is based on an expectation over the next action-values.
+
+Q-learning uses the action-value Bellman optimality equation to learn $q_*$.
+
+Expected Sarsa is both an on-policy and off-policy algorithm and a generalised version of Q-learning.
+
+![wk4-subtleties-with-off-policy-control.png](wk4-subtleties-with-off-policy-control.png)
+
+Sarsa can do better than Q-learning when performance is measured online.  This is because on-policy control methods account for their own exploration.
+
+Expected Sarsa performed better than Sarsa across all step sizes measured because it mitigates the variance due to its own policy by taking the expectation over the next action.
+
 # TODO
 
-* Write out all formulae to test understanding.
-
-
-# ======
-
-Lesson 1: TD for Control
-
-Explain how generalized policy iteration can be used with TD to find improved policies
-
-Describe the Sarsa Control algorithm
-
-Understand how the Sarsa control algorithm operates in an example MDP
-
-Analyse the performance of a learning algorithm
-
-Lesson 2: Off-policy TD Control: Q-learning
-
-Describe the Q-learning algorithm
-
-Explain the relationship between q-learning and the Bellman optimality equations.
-
-Apply q-learning to an MDP to find the optimal policy
-
-Understand how Q-learning performs in an example MDP
-
-Understand the differences between Q-learning and Sarsa
-
-Understand how Q-learning can be off-policy without using importance sampling
-
-Describe how the on-policy nature of SARSA and the off-policy nature of Q-learning affect their relative performance
-
-Lesson 3: Expected Sarsa
-
-Describe the Expected Sarsa algorithm
-
-Describe Expected Sarsa’s behaviour in an example MDP
-
-Understand how Expected Sarsa compares to Sarsa control
-
-Understand how Expected Sarsa can do off-policy learning without using importance sampling
-
-Explain how Expected Sarsa generalizes Q-learning
-
-Module 4: Planning, Learning & Acting
-
-Lesson 1: What is a model?
-
-Describe what a model is and how they can be used
-
-Classify models as distribution models or sample models
-
-Identify when to use a distribution model or sample model
-
-Describe the advantages and disadvantages of sample models and distribution models
-
-Explain why sample models can be represented more compactly than distribution models
-
-Lesson 2: Planning
-
-Explain how planning is used to improve policies
-
-Describe random-sample one-step tabular Q-planning
-
-Lesson 3: Dyna as a formalism for planning
-
-Recognize that direct RL updates use experience from the environment to improve a policy or value function
-
-Recognize that planning updates use experience from a model to improve a policy or value function
-
-Describe how both direct RL and planning updates can be combined through the Dyna architecture
-
-Describe the Tabular Dyna-Q algorithm
-
-Identify the direct-RL and planning updates in Tabular Dyna-Q
-
-Identify the model learning and search control components of Tabular Dyna-Q
-
-Describe how learning from both direct and simulated experience impacts performance
-
-Describe how simulated experience can be useful when the model is accurate
-
-Lesson 4: Dealing with inaccurate models
-
-Identify ways in which models can be inaccurate
-
-Explain the effects of planning with an inaccurate model
-
-Describe how Dyna can plan successfully with a partially inaccurate model
-
-Explain how model inaccuracies produce another exploration-exploitation trade-off
-
-Describe how Dyna-Q+ proposes a way to address this trade-off
-
-Lesson 5: Course wrap-up
-
-# XXXXXXXXXXX
-
-# Quiz
-1. Greedy
-2. optim action
-3. state
-4. optim action
-5, Expected
-6. Sarsa
-7. T
-8. T
-9. F
-
-
-[Textbook webpage](http://incompleteideas.net/sutton/book/the-book.html)
-
-Notes
-* [Zubieta's handwritten course notes](https://drive.google.com/file/d/1-QgHag8tGLf5rflYVQixIqhjdW8a-Hdt/view)
-* [FrancescoSaverioZuppichini](https://github.com/FrancescoSaverioZuppichini/Reinforcement-Learning-Cheat-Sheet) Reinforcement Learning Cheat Sheet
-* [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
-* [micahcarroll](https://micahcarroll.github.io/learning/2018/05/17/sutton-and-barto-rl.html) - Chapters 2 and 13
-* [j-kan](https://observablehq.com/@j-kan/reinforcement-learning-notes) - Chapter 3 onwards
-* [indoml](https://indoml.com/2018/02/14/study-notes-reinforcement-learning-an-introduction/#lstd) Most chapters, images generated from latex
-* [nathandesdouits](https://github.com/nathandesdouits/reinforcement-learning-notes) 1st Ed. Chapter 2 & 3 with numpy code
-
-Textbook solutions
-
-* [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
-* [iamhectorotero - Chapter 1 to 3](https://github.com/iamhectorotero/rlai-exercises)
-* [LyWangPX - Chapter 3 onwards](https://github.com/LyWangPX/Reinforcement-Learning-2nd-Edition-by-Sutton-Exercise-Solutions)
-* [Weatherwax's 2008 solutions](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
-
-Possibly this:
-https://towardsdatascience.com/the-complete-reinforcement-learning-dictionary-e16230b7d24e
+* Write out all formulae to test real understanding.
 
 [//]: # (This may be the most platform independent comment)
