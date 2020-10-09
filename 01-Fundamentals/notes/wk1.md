@@ -17,7 +17,7 @@ Textbook solutions
 * [yashbonde](https://yashbonde.github.io/musings.html) - Chapters 2-6, incl exercises
 * [iamhectorotero - Chapter 1 to 3](https://github.com/iamhectorotero/rlai-exercises)
 * [LyWangPX - Chapter 3 onwards](https://github.com/LyWangPX/Reinforcement-Learning-2nd-Edition-by-Sutton-Exercise-Solutions)
-* [Weatherwax's 2008 solutions](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
+* [Weatherwax's 2008 solutions Chapters 1 to 9](http://fumblog.um.ac.ir/gallery/839/weatherwax_sutton_solutions_manual.pdf)
 
 Possibly this:
 https://towardsdatascience.com/the-complete-reinforcement-learning-dictionary-e16230b7d24e
@@ -30,19 +30,23 @@ Reinforcement learning: Reward gives the agent some idea of how good or bad rece
 
 Unsupervised learning:  Extracting the underlying structure from data, the representation of the data.  Can assist in RL.
 
-RL is about learning while interacting with an ever-changing world, refining behaviour as they go.
+RL is about an agent learning while interacting with an ever-changing world, refining behaviour as they go.
 
-The 2 distinguishing features of RL are Trial-and-error search and delayed rewards.
+The two distinguishing features of RL are:
+* Trial-and-error search
+* Delayed rewards
+
+The **defining** feature and difficulty in RL is learning "online" (real-time) rather than just learning from data.
 
 Allowing for changing goals and integrating recent experience is important.
-
-The defining feature and difficulty in RL is learning "online" (real-time) rather than just learning from data.
 
 Weekly new algorithm improvements - breakneck pace.
 
 The fundamentals of RL date back to Pavlov's drooling dogs.
 
-At the heart of any RL system are ideas from one or two decades before now. DQN combines neural networks, Q learning, and experience replay
+At the heart of any RL system are ideas from one or two decades before now.
+
+DQN combines neural networks, Q learning, and experience replay.
 
 ## Book notes
 
@@ -64,13 +68,13 @@ RL includes SL, but for the specific purpose of determining which agent capabili
 
 Four sub-elements of a RL system (beyond agent and environment):
 1. Policy - determines the agent's next action based on what it senses and remembers of its environment
-1. Reward signal - At each time step, a single number is sent from the environment and the objective is to maximise the total reward over the long run. Immediate reward.
-1. Value function - the total of reward achievable, starting from a particular state. Long-term.
+1. Reward signal - At each time step, a single number is sent from the environment and the objective is to maximise the total reward over the long run. Rewards are immediate - based on the last action.
+1. Value function - the total of reward achievable, or *return*, starting from a particular state. Long-term.
 1. Model - allows inferences to be made about how environment will behave, and making of plans.
 
-Achievable rewards are primary, while values are predictions of rewards, and thus secondary.  Values are based on rewards, and the point of estimating values is to achieve greater reward.
+Achievable rewards are primary, while values are predictions of rewards, and thus secondary.  Values are based on rewards, and the point of estimating values is to achieve greatest reward overall.
 
-Values are most important though when making decisions, as they predict long-term reward.
+Values are most important when making decisions, as they predict long-term reward.
 
 Rewards are basically given directly from the environment, but values must be estimated and re-estimated as an agent learns about the rewards it has achieved.
 
@@ -84,7 +88,7 @@ Book is concerned with deciding based on the available state, not determining th
 
 Evolutionary methods (genetic algorithms/programming, simulated annealing) have advantages where the agent cannot sense the whole environment state, but these methods do not learn while interacting with the environment.
 
-Model free methods have advantages where it's difficult to construct a sufficiently accurate model to be useful.  (1.5)
+Model free methods have advantages where it's difficult to construct a sufficiently accurate model to be useful. Q-learning and all of Chapter 6 is one example.
 
 ## 2. Multi-armed Bandits
 
@@ -92,7 +96,7 @@ RL *evaluates* actions taken, rather than SL's instructing independent of the ac
 
 This chapter is about learning in a single situation, or a *non-associative* setting.
 
-2.1 $k$-armed bandits
+##### 2.1 $k$-armed bandits
 
 Here the reward from each bandit is taken from a stationary probability distribution.
 
@@ -100,7 +104,7 @@ The value of an action is the mean or expected reward of taking that action.
 
 If we knew $q_\star(a)$, we would always select the action with the highest reward. But we don't, so we continually refine estimates via $Q(a)$.
 
-2.2 Action value methods
+##### 2.2 Action value methods
 
 Action-value methods are ways of estimating values of actions and also using these estimates to decide on the action to take.
 
@@ -114,7 +118,7 @@ The probability of selecting the optimal action converges to $ \gt 1-\epsilon$, 
 
 Adam is well known for his work on predictive knowledge for reinforcement learning.
 
-Martha's algorithm contributions to reinforcement learning are too many to list here. She has developed several new off-policy learning algorithms, new approaches to policy gradient, and dozens of impressive contributions to representation learning
+Martha's algorithm contributions to reinforcement learning are too many to list here. She has developed several new off-policy learning algorithms, new approaches to policy gradient, and dozens of impressive contributions to representation learning.
 
 RL is a generic approach to automated decision making.  It will likely really take off in industrial control systems.
 
@@ -122,7 +126,7 @@ RL is a generic approach to automated decision making.  It will likely really ta
 
 Course will closely follow Sutton & Barto's "Reinforcement Learning: An Introduction"
 
-The RL book and this specialization adhere to a simple principle, introduce each idea in the simplest setting it arises
+The RL book and this specialization adhere to a simple principle, introduce each idea in the simplest setting it arises.
 
 ## Lesson 1: The K-Armed Bandit Problem
 
@@ -146,7 +150,7 @@ The conditional expectation is the sum of all possible rewards.
 
 In the continuous case, switch the summation to an integral.
 
-The goal of the agent is to maximise the expected reward by picking the corresponding action.  
+The goal of the agent is to maximise the expected reward by picking the corresponding action.
 
 ![wk1-calculating-q-star.png](wk1-calculating-q-star.png)
 
@@ -154,11 +158,11 @@ Above, 1, 2, & 3 are the different treatments given, and the numbers are improve
 
 ### Learning action values
 
-$q \star (a)$ is not known to the agent, so we must estimate it.
+$q_\star (a)$ is not known to the agent, so we must estimate it.
 
 One way is via the Sample-Average method:
 
-$$ Q_t(a) \doteq \frac{\text{sum of rewards when action `a` taken before time } t}{\text{number of times action `a` was taken prior to } t} $$
+$$ Q_t(a) \doteq \frac{\text{sum of rewards when action `a` taken  time } t}{\text{number of times action `a` was taken prior to } t} $$
 
 Sample-average is set to $0$ if the action hasn't yet been taken.
 
@@ -172,13 +176,13 @@ Book, $\S$2.4: To simplify notation we concentrate on a single action. Let $R_i$
 received *after* the $i$-th selection of this action, and let $Q_n$ denote the estimate of its action
 value *after* it has been selected n-1 times.
 
-This means that after selecting an action 2 times ($R_2$), $Q_3$ is the **expected** action value before selecting the action the 3rd time.  So Q_1 is observed when an action has been taken 0 times.
+This means that after selecting an action 2 times ($R_2$), $Q_3$ is the *expected* action value **before** selecting the action the 3rd time.  So $Q_1$ is observed when an action has been taken 0 times.
 
 Observe $Q_t$, take $a_t$, get $r_t$, update $Q_{t+1}$.
 
 Note that the definition is for $Q_{n+1}$, so it's purpose is to inform the next action, based on the sample-average that has been calculated from the rewards received $n$ times already.
 
-Understanding: the incremental update rule expands the previous average by weight ($n-1$) and the current observation by $1$, then divides by $n$ to get the new average.
+Understanding: the incremental update rule expands the previous average (weighted by $(n-1)$) and adds the current observation, then divides by $n$ to get the new average.
 
 The incremental update rule can be written recursively:
 
@@ -187,12 +191,13 @@ Q_{n+1} &= \frac{1}{n} \sum_{i=1}^n R_i \\
 & = \frac{1}{n} \Bigg(R_n + \sum_i^{n-1} R_i\Bigg) \\
 & = \frac{1}{n} \Bigg(R_n + (n-1) \frac{1}{(n-1)}\sum_i^{n-1} R_i\Bigg) \\
 &= \frac{1}{n} \Big(R_n + (n-1) Q_{n}\Big) \\
+&= \frac{1}{n} \Big(R_n + nQ_{n} -Q_{n} \Big) \\
 &= Q_n + \frac{1}{n} \Big[R_n - Q_{n}\Big]
 \end{align}$$
 
 In final form, it takes the difference between the old average and the new observation, and weights it by $1 \over n$ before adding it to the mix.
 
-This still works correctly after the initial action, setting $Q_2$ to be $R_1$ by cancelling the initial state:
+This still works correctly after the initial action, setting $Q_2$ to be $R_1$ by cancelling the initial state, since $Q_1 = 0$:
 $Q_2 = Q_1 + \frac 1 1 [R_1 - Q_1]$)
 
 [//]: # ( ![wk1-incremental-update-rule.png](wk1-incremental-update-rule.png)  Same as above math)
@@ -215,13 +220,14 @@ Rather than using an average, non-stationary bandit problems have the distributi
 
 If we set a constant StepSize parameter $\alpha \in (0, 1]$, say 0.1, then the most recent rewards affect the action-value estimate more than the earlier ones. (Exponential time decay)
 
+(Ignore the red box, but note that it hides the left square bracket):
 ![wk1-decay-past-rewards-01.png](wk1-decay-past-rewards-01.png)
 
-(Ignore the red here)… Continued... 
+… Continued...
 
 ![wk1-decay-past-rewards-02.png](wk1-decay-past-rewards-02.png)
 
-In the final sum when $i=n$, because $(1-\alpha)^0 = 1 $ becomes simply $\alpha R_n$.
+When $i=n$, the final sum becomes simply $\alpha R_n$, because $(1-\alpha)^0 = 1$.
 
 The weight given to $R_i$ is based on how many rewards ago ($n-i$) it was observed. $n-n$ means the latest observation, and in this case there is no reduction of $\alpha R_i$ by the $(1-\alpha)^0$ term (which term is < 1 so reduces with exponentiation).
 
@@ -233,7 +239,7 @@ The first term shows the influence of the initialisation of $Q$ approaches 0 wit
 
 Book $\S$2.6:  Using the initial definition for $Q_{n+1}$ in the slide above, we can set the $\alpha$ term instead to: $\beta_n \doteq \frac{\alpha}{\bar{o}_n}$, where:
 
-$\bar{o}_n \doteq \bar{o}_{n-1} + \alpha(1 - \bar{o}_{n-1})$
+$\bar{o}_n \doteq \bar{o}_{n-1} + \alpha(1 - \bar{o}_{n-1})$, with $\bar{o}_0 \doteq 0$.
 
 This is an exponential recency-weighted average *without initial bias*.
 
@@ -255,9 +261,9 @@ Epsilon-greedy: We could roll a die and chose to explore iff we get a 1, else ex
 ![wk1-epsilon-greedy-10-armed-01.png](wk1-epsilon-greedy-10-armed-01.png)
 
 
-This result says "This way of behaving obtains this much reward in expectation across possible stochastic outcomes.
+This result says "This way of behaving obtains this much reward in expectation across possible stochastic outcomes."
 
-We use average performance over many independent runs to make scientific comparisons.
+We use average performance over many independent runs to make meaningful comparisons.
 
 $\epsilon = 0.01$ explores only 1% of the time, and converges to taking optimal action 99.1% of the time.  99% is the greedy choice, and the .1 comes from the 1 in 10 chance of performing the best action choosing 10-armed random-uniform in exploration.
 
@@ -265,9 +271,9 @@ $\epsilon = 0.1$ learns faster, but plateaus after about 300 steps.
 
 ### Optimistic initial values
 
-Optimistic initial values encourage early exploration by the initial reward being higher than any possible actual reward.
+Optimistic initial values encourage initial exploration by the initial reward higher than any possible actual reward.
 
-The followed paths then get downgraded toward their actual value, one at a time, meaning that all are explored initially, and the ones that work continue to be used as their value remains higher.
+The followed paths then get downgraded toward their actual value, one at a time, meaning that all are explored initially, and the ones that work continue to be used as their value remains high.
 
 ![wk1-optimistic-initial-values-performance.png](wk1-optimistic-initial-values-performance.png)
 
@@ -283,25 +289,27 @@ We may not know what the maximum reward is in order to be able to set a higher i
 
 Instead of exploring uniformly, we can use uncertainty in estimates to explore in a more intelligent way.
 
-The confidence interval between the lower bound and upper bound represents our uncertainty (small means confident).
+The confidence interval between the lower bound and upper bound represents our certainty (small means confident).
 
-UCB follows optimism in the face of uncertainty, choosing the action with the highest upper bound.
+UCB chooses optimism in the face of uncertainty, choosing the action with the highest upper bound.
 
 ![wk1-UCB-interval-examples.png](wk1-UCB-interval-examples.png)
 
 Either the highest UCB action:
 * has highest value and we bank good reward
-* we learn about the action that we know least about (UCB was highest because massive uncertainty)
+* we learn about the action that we know little about (UCB was highest because massive uncertainty)
 
 ![wk1-UCB-formula.png](wk1-UCB-formula.png)
 
 We take the initial estimated value, and add an amount for exploration, where $c$ controls the amount of exploration.
 
-The more times $a$ is selected, the greater the denominator, and smaller the UCB.
+The more times $a$ is selected ($N_t(a)$), the greater the denominator, and smaller the UCB.
 
 Conversely, if $t$ increases without $a$ being selected, the UCB increases. $ln(t)$ is unbounded, so all actions will eventually be selected, but those selected frequently or with low estimates will be selected with decreasing frequency over time.
 
 ![wk1-UCB-formula-examples.png](wk1-UCB-formula-examples.png)
+
+If the action has only been taken 100 times, then the term added will be larger than if it has been taken 5000 times.
 
 ![wk1-UCB-performance-vs-epsilon-greedy.png](wk1-UCB-performance-vs-epsilon-greedy.png)
 
@@ -315,17 +323,19 @@ We can select the most preferred action based upon a softmax:
 
 $$Pr\{A_t=a\} \doteq \frac{e^{H_t(a)}}{\sum_{b=1}^{k}e^{H_t(b)}} \doteq \pi_t(a)$$
 
-One interesting property of the softmax (Ravi verified) is that softmax of vector $v$ is the same as softmax of $v + 10$ (element wise).
+Where $H_1(a) = 0$.  One interesting property of the softmax (Ravi verified) is that softmax of vector $v$ is the same as softmax of $v + c$ (element wise, where $c$ is a constant).
 
-Where $H_1(a) = 0$. This is useful as the only thing required for any situation is the relative preference over the other possible actions. The equation for stochastic gradient ascent is given as:
+This is useful as the only thing required for any situation is the relative preference over the other possible actions. The equation for stochastic gradient ascent is given as:
 
 $$H_{t+1}(A_t) = H_t(A_t) + \alpha(R_t - \bar{R_t})(\mathbb{1}_{a = A_t} - \pi_t(a))$$
 
 $\bar R$ is the average of all rewards up to but not including time $t$, and serves as a baseline - if $R_t$ is higher, the probability of action $A_t$ is increased, and vice versa.
 
+### Summary
 
+![wk1-method-parameter-study.png](wk1-method-parameter-study.png)
 
-### Contextual bandits for real world learning
+### Contextual bandits for real world learning (video)
 
 Real-world online and interactive learning, rather than a model that is trained then deployed without the possibility to change.
 
@@ -360,9 +370,5 @@ Imagine that there are multiple $k$-armed bandits, and at each time the one pres
 This is an example of an *associative search* task, as association of actions to the situations in which they are best is also involved, in addition to finding the best actions.  These are called contextual bandits.
 
 Contextual bandits are intermediate between the $k$-armed bandit and the full reinforcement learning problem as a policy is required, but each reward is still immediately assigned after an action.  Actions still don't affect the next situation.
-
-### Summary
-
-![wk1-method-parameter-study.png](wk1-method-parameter-study.png)
 
 [//]: # (This may be the most platform independent comment)
