@@ -12,7 +12,7 @@ Bandits don't really represent many aspects of real-world problems: the agent is
 * Teach a man to fish and he'll eat for a lifetime - supervised learning
 * Give a man a need for fish and he'll figure it out - reinforcement learning
 
-"All goals can be described by the maximisation of expected rewards."
+Reward hypothesis: "All goals can be described by the maximisation of expected rewards."
 
 If accepting the hypothesis, then there are two areas need to be addressed:
 
@@ -71,7 +71,7 @@ The 2nd last equation is a converging geometric series when $0 \le \gamma \lt 1$
 ![wk2-continuing-recursive-returns.png](wk2-continuing-recursive-returns.png)
 This important formula will be used a lot in the future.
 
-Termination time step $G_T$ is defined as 0.
+Reward at termination time step $G_T$ is defined as 0.
 
 ## Textbook reading
 
@@ -81,9 +81,9 @@ There is a need to trade off immediate vs long-term rewards.
 
 In bandits, $q_*(a)$ was the value function, as a single action yielded a reward, and then state reset to an initial starting position.
 
-In MDPs the value of an action is $q_*(a, s)$ as the values of actions vary based upon the context of the state in which they are taken.
+In MDPs the value of an action is $q_*(a, s)$ denoting that the values of actions depend also upon the context of the state in which they are taken.
 
-The value of a particular state is denoted $v_*(s)$, the total cumulative (possibly discounted) reward of that state, given optimal actions.
+The value of a particular state is denoted $v_*(s)$, the total cumulative (possibly discounted) reward of that state, *given optimal actions*.
 
 ### 3.1 Agent-Environment interface
 
@@ -149,12 +149,12 @@ This infinite sum is finite as long as the sequences of rewards is bounded and $
 
 If $\gamma = 0$, the agent only maximises the immediate return, and with $\gamma = 1$, there is no discounting, allowing for an infinite reward.
 
-If the rewards at each non-final time step is $0$, and only a single reward $R$ is given at the final time step, then this simplifies to $Ry^K$ where $K$ is the number of timesteps to $t_T$.
+If the rewards at each non-final time step is $0$, and only a single reward $R$ is given at the final time step, then this simplifies to $\gamma^KR$ where $K$ is the number of timesteps to $t_T$.
 
 Discounting:
 - eliminates infinite returns
 - encodes uncertainty about future rewards
-- adjusts preference for immediate vs delayed rewards`
+- adjusts preference for immediate vs delayed rewards
 
 All states plus terminal states are denoted: $S^+$.
 
