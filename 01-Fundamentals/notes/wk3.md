@@ -1,8 +1,10 @@
 # Week 3: Value Functions and Bellman Equations
 
+**See the bottom of document for textbook notes and $LaTeX$ formulae.**
+
 ## Value functions
 
-The action value of a state is the expected return if the agent selects a given action, and then follows policy.
+The action value of a state/action pair is the expected return if the agent selects a given action, and then follows policy.
 
 A value function summarises all possible futures by averaging over their returns.
 
@@ -28,13 +30,15 @@ Barto and Sutton disposed of one of the two core ideas of Klopf: that goal-seeki
 
 ### Bellman equations
 
-These allow us to express a state-value or action-value in terms of their successors.
+These equations allow us to express a state-value or action-value recursively, in terms of their successors.
+
+$G_t$ is the return following time $t$.
 
 ![wk3-state-value-bellman-eq.png](wk3-state-value-bellman-eq.png)
 
 We can use the recursive definition as neither $\pi$ nor $p$ depend on time.
 
-The magic of value functions is that they can be used as a stand-in for the average of an infinite number of possible futures.
+The magic of value functions is that they represent the average of an infinite number of possible futures (following the policy).
 
 ![wk3-action-value-bellman-eq.png](wk3-action-value-bellman-eq.png)
 
@@ -47,6 +51,8 @@ Policy is uniform random U,D,L,R movement.
 
 The value function is the expected return under policy $\pi$: an average over the return obtained by each sequence of actions that an agent could possibly choose (in infinitely many possible futures).
 
+Below, $\gamma=0.7$:
+
 ![wk3-gridworld-state-A-eq.png](wk3-gridworld-state-A-eq.png)
 
 We can remove the sum over $r$ and $s'$ as for each action there is only one next state and reward.
@@ -58,6 +64,13 @@ In the 2nd equation, $s'$ and $r$ still depend on $s$ and $a$, but for notationa
 The value of each variable can be found as this is a system of 4 linear equations with 4 variables.
 
 ![wk3-gridworld-state-values.png](wk3-gridworld-state-values.png)
+
+![wk3-jumpy-grid-world-value-function.png](wk3-jumpy-grid-world-value-function.png)
+An example gridworld for demonstrating value functions.
+
+The value for $A$ is $<10$ because of the transition to the wall (wall bumps give $-1$ reward)
+
+The value for $B$ is $>5$ because it lands in the middle where wall bumps are further away in discounted time.
 
 The Bellman equation reduced an unmanageable infinite sum over possible futures into a tractable algebra problem.
 
@@ -83,11 +96,14 @@ There's always at least one optimal policy, but possibly more than one.
 
 Policies can be combined to create a new meta-policy such that for each state, the best policy is selected.  Such a meta-policy is called an optimal policy, or $\pi_*$.
 
-The optimal policy can have state values strictly greater than the individual policies it is created from, as the overall area under the curve is greater.
+The optimal policy can have state values strictly greater than (not equal to) the individual policies it is created from, as the overall area under the curve is greater.
+
+An optimal policy can ensure that it maximises return at every single time step, meaning that in the Bellman state-value equations, the probability weighting given by $\pi_*(a|s)$ will be maximum $=1$ for an action giving highest return. (In the case of multiple equal-highest returns, for simplicity, assume that only one is given probability $1$, rather than probabilities summing to $1$ being distributed between them). In the Bellman state-value equation, the probability of $1$ is then multiplied by a maximum expected return (also discounted returns are added). This will create state-values greater than an individual policy in the case where the best individual policy's probability of transition to the highest reward state was lower than $1$.
 
 An optimal policy can ensure that it maximises return at every single time step, meaning that in the Bellman state-value equations, the probability weighting given by $\pi_*(a|s)$ will be maximum $=1$ for an action giving highest (or equal-highest) return. (Recall this probability was 0.25 in the Gridworld non-optimal policy example). In the Bellman state-value equation, the probability of $1$ is then multiplied by a maximum expected return (also discounted returns are added).  This will create state-values greater than an individual policy in the case where the best individual policy's probability of transition to the highest reward state was lower than $1$.
 [(my answer posted here)](https://www.coursera.org/learn/fundamentals-of-reinforcement-learning/discussions/weeks/3/threads/W6aZN8TPEemx-wqBHs6BaA/replies/utda3pqXQ5KXWt6alwOSLg)
 
+Notice the optimal policy changes with different values of $\gamma$:
 ![wk3-optimal-policy-example.png](wk3-optimal-policy-example.png)
 
 There are only 2 deterministic policies which are determined by the choice made in state $X$.
@@ -110,6 +126,10 @@ The sum over $\pi_*(a|s)$ can be exchanged with selection of the optimal action,
 
 ![wk3-bellman-optimality-q-star.png](wk3-bellman-optimality-q-star.png)
 
+![wk3-optimal-bellman-backup-diagrams.png](wk3-optimal-bellman-backup-diagrams.png)
+
+Backup diagrams for Bellman optimality equations
+
 ![wk3-bellman-optimality-solving.png](wk3-bellman-optimality-solving.png)
 
 In the top half, the non-optimal Bellman equations can be solved via a system of equations, given $\pi, p, \gamma$.
@@ -128,11 +148,13 @@ Given an optimal value function, it's quite easy to find an associated optimal p
 
 ![wk3-gridworld-optimal-state-values.png](wk3-gridworld-optimal-state-values.png)
 
-Unlike the uniform random policy, the optimal policy won't ever choose to bump into the walls, so the bottom row doesn't have negative values.  As a consequence, the immediate reward of state $A$ is much higher than +10.
+Unlike the uniform random policy, the optimal policy won't ever choose to bump into the walls, so the bottom row doesn't have negative values.  As a consequence, the immediate reward of state $A$ is much higher than +10. Compare with previous jumpy-gridworld above.
+
+Also, note the states with values of 16.0 are all equidistant from $A$ in number of moves.
 
 ![wk3-determining-optimal-policy-diagram.png](wk3-determining-optimal-policy-diagram.png)
 
-To evaluate the boxed term for a given action, we only need to perform a single step lookahead at the next states and values that follow.  The branching after the action (below the solid circle) shows captures stochastic transitions to next states.
+To evaluate the boxed term for a given action, we only need to perform a single step lookahead at the next states and values that follow.  The branching after the action (below the solid or action circle) shows stochastic transitions to next states.
 
 ![wk3-choosing-argmax-a.png](wk3-choosing-argmax-a.png)
 
@@ -156,7 +178,7 @@ Finding an optimal action-value function corresponds to finding an optimal polic
 A deterministic policy has probability $1$ of selecting a single action given a state.
 
 ![wk3-summary-02.png](wk3-summary-02.png)
-Value functions simply things by summarising many possible future returns into a single number.
+Value functions simply things by summarising the expected value of many possible future returns into a single number.
 
 $q_\pi$ is the value of selecting $a$, then afterwards following $\pi$.
 
@@ -166,7 +188,7 @@ The Bellman state-value equation gives the value of a state as a sum over the va
 
 The Bellman action-value equation gives the value of a state-action pair as a sum over the immediate rewards and values of all possible next state-action pairs (with their included rewards).
 
-To find a policy which maximises reward, we define:
+To find a policy which maximises reward, we defined:
 * Optimal policies
 * The optimal value function
 * Bellman optimality equations
@@ -182,9 +204,9 @@ Every optimal policy shares the same optimal state-value and action-value functi
 
 The Bellman optimality equations replace referencing a specific policy with a max over all actions, since the optimal policy must always select a best available action.
 
-We can extract the optimal policy from the optimal state-value policy, but we also need the one-step dynamics of the MDP.
+We can extract the optimal policy from the optimal state-value policy, but we also need the probability of the MDP's next state.
 
-We can get an optimal policy with much less work from the optimal action-value function by selecting the action with highest value in each state.
+We can get an optimal policy with much less work from the optimal action-value function by selecting the action with highest value in each state.  The probability dynamics of the next state need not be known in this case.
 
 Next week:  How to compute optimal policies using Bellman's equations.
 
@@ -193,6 +215,8 @@ Next week:  How to compute optimal policies using Bellman's equations.
 $$G_t \doteq \sum_{k=0}^{\infty}{\gamma^{k}R_{t+k+1}} = \sum_{k = t+1}^{T}{\gamma^{k - t - 1}R_{t}}  $$
 
 This holds true for both $T = \infty$ and $\gamma = 1$, but not both.
+
+Undiscounted or $\gamma=1$ is appropriate for episodic tasks, where the sum of expected return will not be infinite if the episode length is not infinite.
 
 ### 3.5 Policies and Value Functions
 
@@ -281,6 +305,9 @@ q_\pi(s, a) &= \mathbb E\left[R_{t+1}\right] + \gamma \mathbb E \left[v_\pi(S_{t
 &= \sum_{s',r} r \cdot p(s',r|s,a) + \gamma \ v_\pi(s')
 \end{align}$$
 
+![Exercises 3.27 to 3.29](ch3-exercises.jpg)
+Exercises 3.27 to 3.29
+
 ### 3.6 Optimal Policies and Optimal Value Functions
 
 Optimal policies share the same optimal state-value function, denoted $\displaystyle v_*(s)$, defined as:
@@ -328,7 +355,7 @@ For the kinds of tasks in which we are interested, optimal policies can be gener
 In many cases of practical interest, there are far more states than could possibly be entries in a table. In these cases the functions must be approximated, using some sort of more compact parameterized function representation.
 
 The online nature of reinforcement learning makes it possible to approximate optimal policies in ways that put more effort into learning to make good decisions for frequently encountered states, at the expense of less effort for infrequently encountered states. This is one key property that distinguishes reinforcement learning from other
-approaches to approximately solving MDPs.
+approaches of approximately solving MDPs.
 
 ## 3.8 Summary
 
@@ -340,7 +367,5 @@ A policy whose value functions are optimal is an optimal policy.
 
 $$ \begin{align}
 \end{align}$$
-
-### TODO: Add exercises up to approx 3.29.
 
 [//]: # (This may be the most platform independent comment)
