@@ -77,9 +77,9 @@ It's also possible to use a single array, in which case some updates will use ne
 
 Terminal states are top left or bottom right squares, but formally both are the same state.  The value of the terminal state is defined to be $0$.
 
-An action which would take the agent off the grid returns it to the same position.
+Each transition has reward $-1$. Any transition which would take the agent off the grid returns it to the same position.
 
-If using the 2 array update, the $V'$ values are irrelevant as they will all be updated based on $V$ before use.
+If using the 2 array update, the initial $V'$ values are irrelevant as they will all be updated based on $V$ before use.
 
 ![wk4-iterative-policy-evaluation-pseudocode.png](wk4-iterative-policy-evaluation-pseudocode.png)
 
@@ -159,14 +159,13 @@ Both processes (evaluation, improvement) stabilize only when a policy has been f
 
 #### Outline value iteration, an important example of generalized policy iteration
 
-Value Iteration combines (greedy) policy evaluation and improvement into a single step.
+Value Iteration combines (greedy) policy evaluation and improvement into a single step.  The algorithm doesn't reference any particular policy, hence the name "value iteration".
 
 In Value Iteration, we make passes over all the states, running only one step of (greedy) policy evaluation per state, and using the greedy value to update the state-value.
 
 ![wk4-value-iteration-algorithm.png](wk4-value-iteration-algorithm.png)
-The algorithm doesn't reference any particular policy, hence the name "value iteration".
 
-Instead of updating based on a fixed policy, we update based on the action that maximises the current value estimate.
+Instead of updating based on a fixed policy, we update based on the greedy policy, ie, the action that maximises the current value estimate.
 
 #### Differentiate between synchronous and asynchronous dynamic programming methods
 
@@ -174,19 +173,13 @@ Synchronous methods sweep the entire state-space in each iteration.  This can be
 
 Asynchronous methods may update a single state many times before another is updated once.
 
-For convergence, asynchronous methods must continue to update the values of all states.
+For convergence, asynchronous methods must continue to update (even if rarely) the values of all states.
 
 Selective updates allow asynchronous methods to propagate more quickly, e.g. by updating the states "nearby" those that have recently changed value.  This is useful when the state space is very large.
 
 Asynchronous algorithms also make it easier to intermix computation with real-time interaction. To solve a given MDP, we can run an iterative DP algorithm at the same time that an agent is actually experiencing the MDP. The agent’s experience can be used to determine the states to which the DP algorithm applies its updates. At the same time, the latest value and policy information from the DP algorithm can guide the agent’s decision making.
 
 To complete even one sweep of a synchronous method requires computation and memory for every state. For some problems, even this much memory and computation is impractical, yet the problem is still potentially solvable because relatively few states occur along optimal solution trajectories. Asynchronous methods and other variations of GPI can be applied in such cases and may find good or optimal policies much faster than synchronous methods can.
-
-#### Describe Monte Carlo as an alternative method for learning a value function
-
-![wk4-monte-carlo-sampling-example.png](wk4-monte-carlo-sampling-example.png)
-
-We could take many different returns under $\pi$ and find their mean, which will eventually converge to the state-value.  We may need to average many returns before the estimate converges, and this would need to be done for every single state.
 
 #### Describe Monte Carlo as an alternative method for learning a value function
 
@@ -246,6 +239,6 @@ All the updates done in DP algorithms are called *expected updates* because they
 
 Rather than using two arrays for policy evaluation, we usually have the in-place version in mind when we think of DP algorithms.
 
-Value iteration simply turns the Bellman optimality equation (which doesn't reference $\pi$) into an update rule for $v(s) \  \forall s \in \mathcal S$.  In the formula, it uses the $\max_a$ rather than an action's expected value (under $\pi$) used in policy evaluation.  In value iteration, the evaluation part is truncated - it only looks at $v(s')$ once for each state.
+Value iteration simply turns the Bellman optimality equation (which doesn't reference $\pi$) into an update rule for $v(s) \  \forall s \in \mathcal S$.  In the formula, it uses the $\max_a$ rather than an action's expected value (under $\pi$) used in policy evaluation.  In value iteration, the evaluation doesn't converge to approximate a bellman equation - it only updates $v'(s)$ once for each state.
 
 [//]: # (This may be the most platform independent comment)
