@@ -3,7 +3,7 @@
 
 # Week 1: Introduction
 
-This course is about learning from experience without a priori knowledge of the underlying MDP model.
+This course is about learning from experience without *a priori* knowledge of the underlying MDP model.
 
 This course is still about tabular methods where an array for action-values can still be maintained.
 
@@ -75,9 +75,13 @@ The estimated value of a state under a policy is the average of returns sampled 
 
 Start from the end (time $=T$) and work backwards.
 
-The first-visit MC method estimates $v_\pi(s)$ as the average of the returns following first visits to $s$, whereas the every-visit MC method averages the returns following all visits to $s$.  Here we consider the first-visit case.
+The first-visit MC method estimates $v_\pi(s)$ as the average of the returns following an episode's first visit to $s$, whereas the every-visit MC method averages the returns following all visits to $s$.  Here we consider the first-visit case, which has been most widely studied.
 
 ![wk2-first-visit-MC-prediction.png](wk2-first-visit-MC-prediction.png)
+
+Note:
+* The state is checked to see if it occurred earlier in time (not yet processed), and is ignored if so.
+* The when the state is $t$, the return on that state's action is $t+1$ (return appears with the next state in $p$).
 
 By the law of large numbers the sequence of averages of these estimates converges to their expected value. Each average is itself an unbiased estimate, and the standard deviation of its error falls as $1/\sqrt n$, where $n$ is the number of returns averaged.
 
@@ -118,7 +122,7 @@ Again, we bump into the exploitation / exploration trade-off.  Is the new road t
 
 ![wk2-exploring-starts.png](wk2-exploring-starts.png)
 
-In Exploring Starts, we explore every initial state-action pair of a policy.  To do this, we must be able to set the start state, which may not always be possible.  After the first action, we follow the policy.
+In Exploring Starts, we explore every initial state-action pair of a policy.  To do this, we must be able to set the start state, which may not always be possible.  After the first action, we follow the policy.  The start state's value is then determined by the average of return received from that state, given the consistent policy.
 
 We specify that the episodes start in a state–action pair, and that every pair has a non-zero probability of being selected as the start. This guarantees that all state–action pairs will be visited an infinite number of times in the limit of an infinite number of episodes. We call this the assumption of exploring starts.  By the law of large numbers, the average action values will converge on their expected value.
 
@@ -136,8 +140,10 @@ The most common alternative approach to assuring that all state–action pairs a
 
 In the Evaluation step, we estimate the action-values using Monte Carlo prediction, either Exploring Starts or $\epsilon$-soft.
 
+[//]: # Not a useful picture
+[//]: # ![wk2-blakjack-calculating-action-values.png](wk2-blakjack-calculating-action-values.png)
 
-![wk2-blakjack-calculating-action-values.png](wk2-blakjack-calculating-action-values.png)
+Blackjack lends itself to Exploring Starts well as each initial state can be sampled (and naturally is in the playing of the game.)
 
 ![wk2-blakjack-learned-policy-and-state-values.png](wk2-blakjack-learned-policy-and-state-values.png)
 
@@ -150,13 +156,13 @@ Sometimes it's not feasible to start in each possible state, e.g. in a self-driv
 
 Given that Exploring Starts is often impractical, we use a variation of epsilon greedy to ensure exploration.
 
-$\epsilon$-soft policies are always stochastic - all actions are taken in each state with a non-0 probability.
+$\epsilon$-soft policies are always stochastic - all actions are taken in each state with a non-0 probability. Note this is "soft" not the "greedy" subset.
 
 With a non-0 probability of each action, eventually all state-action pairs will be visited.
 
 $\epsilon$-soft policies are defined as those for which $\pi(a|s) \ge \frac \epsilon {|\mathcal A(s)|}, \ \forall s \in \mathcal S, \ \mathrm{given}\ \epsilon \gt 0$.
 
-$\epsilon$-greedy policies are maximally greedy $\epsilon$-soft policies, since for all *non-greedy* actions, $\pi(a|s) = \frac \epsilon {|\mathcal A(s)|}, \ \forall s \in \mathcal S, \ \mathrm{given}\ \epsilon \gt 0$.
+$\epsilon$-greedy policies are maximally greedy $\epsilon$-soft policies, since for all *non-greedy* actions, $\pi(a|s) = \frac \epsilon {|\mathcal A(s)|}, \ \forall s \in \mathcal S, \ \mathrm{given}\ \epsilon \gt 0$, allocating maximum probability to the greedy action (selected by tie-breaker if necessary).
 
 In $\epsilon$-greedy, the greedy action gets $\pi(a|s) = 1 - \epsilon + \frac \epsilon {|\mathcal A(s)|}$.
 
@@ -184,9 +190,9 @@ $Q$-learning (later lessons) allows us to learn the optimal policy.
 
 ## Lesson 4: Off-policy learning for prediction
 
-All learning control methods face a dilemma: They seek to learn action values conditional on subsequent *optimal* behaviour, but they need to behave non-optimally in order to explore all actions (to *find* the optimal actions). How can they learn about the optimal policy while behaving according to an exploratory policy? The on-policy approach in the preceding section is actually a compromise—it learns action values not for the optimal policy, but for a near-optimal policy that still explores.
+All learning control methods face a dilemma: They seek to learn action values conditional on subsequent *optimal* behaviour, but they need to behave non-optimally in order to explore all actions (to *find* the optimal actions). How can the optimal policy be learnt while behaving according to an exploratory policy? The on-policy approach in the preceding section is actually a compromise—it learns action values not for the optimal policy, but for a near-optimal policy that still explores.
 
-On-policy methods attempt to evaluate or improve the policy that is used to make decisions, whereas off-policy methods evaluate or improve a policy different to that used to generate the data.
+On-policy methods attempt to evaluate or improve the policy that is used to make decisions, whereas off-policy methods evaluate or improve a policy different to that used to learn returns.
 
 In the on-policy learning implicitly discussed so far, the behaviour policy is equal to the target policy.
 
@@ -214,11 +220,11 @@ By behaving according to an exploratory behaviour policy, an agent gets exposure
 
 The behaviour policy must "cover" the target policy, meaning that $b(a|s) > 0$ where $\pi(a|s) > 0$.  The behaviour policy needs to be able to observe returns for all paths chosen by the target policy to be able to estimate complete values for the target policy.
 
-It follows from coverage that $b$ must be stochastic in states where it is not identical to $\pi$:  if $\pi(a|s) \ne 0$ then there must be some non-zero probability of $b(a|s)$ which is also $\ne 1$ (unless $\pi(a|s) = b(a|s) = 1$). This leads to it being exploratory.
+It follows from coverage that $b$ must be stochastic in states where it is not identical to $\pi$:  if $\pi(a|s) \ne 0$ then there must be some non-zero probability of $b(a|s)$ which is also $\ne 1$ (unless $\pi(a|s) = b(a|s) = 1$, so all other probabilities are $0$). This leads to it being exploratory.
 
 The target $\pi$ may be deterministic, and is often the deterministic greedy function w.r.t. the current estimate of $q_\pi$, eventually becoming the deterministic optimal policy via iteration.
 
-In this section, we consider only the prediction / evaluation problem, given an unchanging $\pi$.
+In this section, we consider only the prediction / evaluation problem, given an unchanging target policy $\pi$.
 
 ### Understand importance sampling
 
@@ -233,7 +239,7 @@ P\{A_t, S_{t+1}, & A_{t+1}, ... ,S_T | S_t, A_{t:T-1} \sim \pi\} \\
 & = \prod_{k=t}^{T-1} \pi(A_k|S_k)p(S_{k+1}|S_k, A_k)
 \end{align} $$
 
-The importance sampling ratio is the relative probability of the trajectory under the target and behaviour policies:
+The importance sampling ratio (rho, $\rho$) is the relative probability of the trajectory under the target and behaviour policies:
 
 $$
 \begin{align}
@@ -241,6 +247,8 @@ $$
 & = \prod_{k=t}^{T-1} \frac{\pi(A_k|S_k)}{b(A_k|S_k)}
 \end{align}
 $$
+
+The MDP dynamics $p$ don't need to be known as long as they exist, because $p$ cancels out.
 
 If the probability of any action under $\pi$ is $0$, then the $\rho$ for that trajectory is also $0$.  Later on with the weighted importance sampling formula, this $\rho$ of $0$ contributes neither to the numerator or denominator, effectively skipping returns from episodes inconsistent with the target policy $\pi$.
 
@@ -255,27 +263,27 @@ It's convenient to denote timesteps in a way which increases across episode boun
 If an episode reaches terminal state at $t=100$, then the next episode begins at $t=101$.
 
 Notation:
-* $\mathscr T (s)$ denotes the time steps in which state $s$ is visited for every-visit models, or the first times of visit for first-visit models.
-* $T(t)$ denotes the first time step termination following time $t$.
+* $\mathscr T (s)$ denotes all *time steps* in which state $s$ is visited for every-visit models, or the first time**s** of visit for first-visit models (one per episode).
+* $T(t)$ denotes the first termination time step following time $t$.
 * $G_t$ denotes the return from time $t$ through $T(t)$
 
-The set $\{ G_t \}_{t \in \mathscr T(s)}$ are the returns that pertain to state $s$, and the set $\{ \rho_{t:T(t)-1} \}_{t \in \mathscr T(s)}$ are the corresponding importance sampling ratios (which I expect is a set of uniform values).
+The set $\{ G_t \}_{t \in \mathscr T(s)}$ are the returns that pertain to state $s$, and the set $\{ \rho_{t:T(t)-1} \}_{t \in \mathscr T(s)}$ are the corresponding importance sampling ratios from those states along their unique episodic trajectories to their terminal states.
 
 To estimate $v_\pi(s)$, we scale the behaviour returns by $\rho$ and average the result:
 
-$$V(s) \doteq \frac{\sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1}G_t}{|\mathscr T (s)|}$$
+$$V(s) \doteq \frac{\displaystyle \sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1} \cdot G_t}{|\mathscr T (s)|}$$
 
 The above simple average, is called *ordinary importance sampling*.
 
 *Weighted importance sampling* uses a weighted average:
 
-$$V(s) \doteq \frac{\sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1}G_t}{\sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1}}$$
+$$V(s) \doteq \frac{\displaystyle \sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1} \cdot G_t}{\displaystyle \sum_{t\in \mathscr T(s)}\rho_{t:T(t) - 1}}$$
 
 ($0$ is used if the denominator is $0$.)
 
 In the weighted importance sampling case of a single return observed in state $s$, the sums will cancel, giving a value of $G_t$, which is a reasonable estimate, but is an expected value under $b$, not under $\pi$, and is statistically biased.  In the ordinary importance sampling case, the value is the expected value under $\pi$, but it can be extreme if the trajectory is many times more likely under $\pi$ than under $b$, with the estimate being many times times higher than the observed return, even though the episode was very representative of the target policy.
 
-Ordinary importance sampling is unbiased.  Variance is unbounded (as $\rho$ is unbounded).
+First-visit ordinary importance sampling is unbiased.  Variance is unbounded (as $\rho$ is unbounded).
 
 Weighted importance sampling is biased (but the bias converges asymptotically to $0$). Variance is bounded (the maximum weight on any term is $1$), and converges to $0$ assuming bounded returns.
 
@@ -286,7 +294,9 @@ In practice, the weighted estimator is preferred as it has drastically lower var
 
 #### Coursera slides
 
-These slides don't take into account the whole trajectory from $s$, but rather look only at $s$ alone.
+For a given state, $s$, $X$ and $x$ correspond to the expected return and a single sampled return ($G_t$).
+
+$\pi(x)$ is the probability of getting the return $x$, following $\pi$ to termination.
 
 We are sampling a variable $x \sim b$, but we want to estimate: $\mathbb E_\pi[X]$.
 
@@ -298,13 +308,17 @@ The below formulae assume ordinary importance sampling:
 
 $\rho(x) = \frac {\pi(x)} {b(x)}$ is called the Importance Sampling Ratio.
 
-We treat $x \cdot \rho(x)$ as a new random variable $X$ being sampled:
+We treat $x \cdot \rho(x)$ as a new random variable $X$ being sampled, multiplied by the probability $b(x)$ (which term is swallowed by the expectation):
 
 ![(wk2-derivation-of-importance-sampling-02.png](wk2-derivation-of-importance-sampling-02.png)
 
 ![(wk2-derivation-of-importance-sampling-03.png](wk2-derivation-of-importance-sampling-03.png)
 
+Line two follows from the grey box to its right.
+
 Note that $x$ is now drawn from $b$ (as desired), but estimates a value drawn from $\pi$ via $\rho$.
+
+See also *weighted importance sampling* in the textbook notes above, and the textbook for it's implementation (which would be used in practice).
 
 ### Use importance sampling to estimate the expected value of a target distribution using samples from a different distribution.
 
@@ -312,21 +326,29 @@ Note that $x$ is now drawn from $b$ (as desired), but estimates a value drawn fr
 
 With samples taken just from $b$, we got a very good estimation for the expectation under $\pi$.
 
+![wk2-off-policy-trajectories.png](wk2-off-policy-trajectories.png)
+
 ### Understand how to use importance sampling to correct returns
 
-Multiply each return observed under $b$ by $\rho$.
+In the Monte Carlo algorithm we work backwards, so we incrementally compute the current $\rho$ thus:
+
+![wk2-computing-rho-incrementally](wk2-computing-rho-incrementally.png)
 
 ![wk2-monte-carlo-off-policy-v-pi-algorithm.png](wk2-monte-carlo-off-policy-v-pi-algorithm.png)
 
-Ordinary importance sampling is used above (a simple average).
+Multiply each return observed under $b$ by $\rho$ (or $W$ in the pseudo code) to get an approximate of the value under $\pi$.
+
+The simple average means that this is ordinary importance sampling.
 
 ### Off-policy Monte Carlo control
 
 ![wk2-monte-carlo-off-policy-control.png](wk2-monte-carlo-off-policy-control.png)
 
+This weighted average method comes from textbook section 5.7.  $C$ stores the sum of $\rho$ observed so far, and the average changes to an incremental update average. $W \over C$ is the weighting factor for the current $\rho$ compared to summed $\rho$ for the incremental average update.
+
 The behaviour policy is allowed to change between or even within episodes.
 
-$\frac{1}{b(A_k|S_k)}$ is used instead of $\frac{\pi(A_k|S_k)}{b(A_k|S_k)}$ in the estimation case, as $\pi(A_k|S_k) = 1$ since $\pi$ is a deterministic policy with ties broken consistently.
+$\frac{1}{b(A_k | S_k)}$ is used instead of $\frac{\pi(A_k|S_k)}{b(A_k|S_k)}$ in the estimation case (section 5.6), as $\pi(A_k|S_k) = 1$ since $\pi$ is a deterministic policy with ties broken consistently.
 
 
 Note that that the greedy action to take propagates backwards and is based on subsequent greedy actions. The current episode is aborted if the action taken was not consistent with $\pi$ (the optimal policy under construction).
@@ -377,6 +399,9 @@ $S = \frac {1 - \gamma} {1 - \gamma} = 1$.
 
 Monte Carlo methods average observed returns back-allocated to states.
 
+* There's no bootstrapping from already-known values of later state's estimates.
+* No model of the environment is needed.
+
 Exploring starts is one way to ensure exploration, but infeasible in cases like autonomous vehicles.
 
 Epsilon-soft policies allow us to learn the best epsilon-greedy policy, but not the optimal policy.
@@ -386,5 +411,12 @@ Off-policy learning allows us to learn from the data generated by a behaviour po
 Importance sampling increases the estimate of returns for values more likely to be seen under $\pi$ (and vice-versa).
 
 The sample average effectively contains the right proportion of each return so that in expectation it is as if the returns had been sampled under $\pi$.
+
+Monte Carlo method advantages over DP:
+
+1. They can be used to learn optimal behaviour directly from interaction with the environment, with no model of the environment’s dynamics.
+1. They can be used with simulation or sample models. For surprisingly many applications it is easy to simulate sample episodes even though it is difficult to construct the kind of explicit model of transition probabilities required by DP methods.
+1. It is easy and efficient to focus Monte Carlo methods on a small subset of the states.  A region of special interest can be accurately evaluated without going to the expense of accurately evaluating the rest of the state set (we explore this further in Chapter 8).
+1. They may be less harmed by violations of the Markov property. This is because they do not update their value estimates on the basis of the value estimates of successor states.  In other words, it is because they do not bootstrap.
 
 [//]: # (This may be the most platform independent comment)
