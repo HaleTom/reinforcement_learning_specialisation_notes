@@ -31,13 +31,13 @@ Above we replace $G_{t+1}$ with a recursively-defined value from $v$.
 
 The value of the next state is a stand-in for the value of the return until the end of the episode.  We don't need to wait until the end of the episode, but we do need to wait until the next step.
 
-* The MC target is an estimate of the expected value by averaging samples
+* The MC target is an estimate of the expected value (average of sampled return)
 * The DP target is an estimate because $v_\pi(S_{t+1})$ is not known
 * The TD target is an estimate for both reasons: a sample of the expected value of the reward, and the current estimate of $V_\pi(S_{t+1})$ rather than the true $v_\pi$.
 
 Like with MC, the update is a sample update, based on a single observed next state, unlike DP's update which is based on the expected value from the complete probability distribution of next states.
 
-MC targets generally have higher variance while TD(0) targets usually have lower variance.
+MC targets generally have higher variance while TD(0) or one-step TD targets usually have lower variance.
 
 
 ### Temporal Difference Error
@@ -57,7 +57,7 @@ TD(0) is called one-step TD, and is a special case of TD($\lambda$) and $n$-step
 
 ![wk3-1-step-TD.png](wk3-1-step-TD.png)
 
-Assume we are are looking from the perspective of state $S_{t+1}$. We've stored the state of the previous time step to make our update to it (after we have observed the reward associated with the action taken within it).  We discount the current state's value by $\gamma$, add the observed reward and then treat that sum as the observed value of the previous state.
+Assume we are are looking from the perspective of state $S_{t+1}$. We've stored the state of the previous time step to be able to make our update to it. We have also observed the reward in the current state, coming from the action taken within the previous state.  We discount the current state's value by $\gamma$, add the observed reward and then treat that sum as the observed value of the previous state.
 
 In DP, we used the $p$ and $\pi$ to update based on all possible future states (and their transition returns).  Here we only use the next observed state and observed return.
 
@@ -114,7 +114,7 @@ Unlike with MC, we don't need to wait until the end of an episode - we can updat
 
 Thus, TD can be used in continuing tasks, but MC can't.
 
-MC must ignore or discount episodes where experimental actions are taken.  TD learns from each and every transition, regardless of the subsequent actions taken.
+MC must ignore or discount episodes where experimental actions are taken (the final return is used to update the state-action, rather than the reward).  TD learns from each and every transition, regardless of the subsequent actions taken.
 
 Unlike DP, a model of the environment is is not required
 
@@ -126,9 +126,13 @@ TD asymptotically converges to the correct predictions, and usually does so fast
 
 With MC, the final return propagates back all the way to the beginning (discounted by $\gamma$).
 
-With TD, the update is only based on the difference between the estimated previous and discounted next-state values, and the return. Return that is only available at the end of an episode propagates toward earlier states one state per episode.
+With TD, the update is only based on the difference between the estimated previous and discounted next-state values, and the return. If a reward is only given at the end of an episode, it propagates to only the penultimate state on the first episode, but on subsequent episodes, it will propagate back on any transition to any state that has been updated before.
 
 ![wk3-RMS-error-TD-vs-MC.png](wk3-RMS-error-TD-vs-MC.png)
+
+The bottom right shows the random walk (policy is a coin toss of Left or Right in each state), with $\gamma = 1$, and no rewards =0 apart from a transition into the and right terminal state = 1.
+
+[The video](https://www.coursera.org/learn/sample-based-learning-methods/lecture/CEzFc/comparing-td-and-monte-carlo) seems to use $\alpha=0.5$ as the updated state's value moves half way to the next state's value.
 
 TD learned quicker and achieved a better final error.
 
