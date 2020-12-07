@@ -81,7 +81,7 @@ The first-visit MC method estimates $v_\pi(s)$ as the average of the returns fol
 
 Note:
 * The state is checked to see if it occurred earlier in time (not yet processed), and is ignored if so.
-* The when the state is $t$, the return on that state's action is $t+1$ (return appears with the next state in $p$).
+* The when the state is $t$, the return on $t$'s action is given at time $t+1$ (return appears with the next state in $p$).
 
 By the law of large numbers the sequence of averages of these estimates converges to their expected value. Each average is itself an unbiased estimate, and the standard deviation of its error falls as $1/\sqrt n$, where $n$ is the number of returns averaged.
 
@@ -93,7 +93,7 @@ Let's use Monte Carlo to learn the action-value function when the play stands on
 
 Assume $\gamma = 1$.  This means we don't need to work backwards, as there are no non-terminal rewards.
 
-Usable ace plot is based on far fewer samples (less likelihood of being dealt one), leading to a rougher plot.
+"Usable ace" plot is based on far fewer samples (less likelihood of being dealt one), leading to a rougher plot.
 
 ![wk2-blakjack-state-values-01.png](wk2-blakjack-state-values-01.png)
 
@@ -156,7 +156,9 @@ Sometimes it's not feasible to start in each possible state, e.g. in a self-driv
 
 Given that Exploring Starts is often impractical, we use a variation of epsilon greedy to ensure exploration.
 
-$\epsilon$-soft policies are always stochastic - all actions are taken in each state with a non-0 probability. Note this is "soft" not the "greedy" subset.
+Note the difference between "soft" and the "greedy" subset below.
+
+$\epsilon$-soft policies are always stochastic - all actions are taken in each state with a non-0 probability.
 
 With a non-0 probability of each action, eventually all state-action pairs will be visited.
 
