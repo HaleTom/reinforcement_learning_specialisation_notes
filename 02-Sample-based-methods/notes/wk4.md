@@ -6,17 +6,23 @@
 
 ![wk4-sarsa-update.png](wk4-sarsa-update.png)
 
-Just like TD state value evaluation (the recall bit above) required the next state to be known so that it's estimate could be looked up, with Sarsa, the next (state, action) pair must be known for it's value to be looked up.
+Just like TD state value evaluation (`Recall` in the slide) required the next state to be known so that it's estimate could be looked up, with Sarsa, the next (state, action) pair must be known for it's value to be looked up.
 
 ![wk4-sarsa-windy-gridworld.png](wk4-sarsa-windy-gridworld.png)
 
+If wind strength is 1, it will move up an additional cell more on the next state compared to zero-wind.
+
+The plot shows the total number of episodes completed after each time step.  Results are averaged over 100 runs.
+
+Epsilon greedy action selection was used, with $r = -1, \gamma\ = -1$ (motivates escape as fast as possible).  Initial values are optimistic, encouraging systematic exploration.
+
 Early episodes take many more timesteps to complete than later ones.  Around 7000 steps, the $\epsilon$-greedy policy stops improving.
 
-The policy won't be optimal because it will continue to explore.
+The $epsilon$-greedy policy won't be optimal because it will continue to explore.
 
 Monte Carlo wouldn't be a good fit - many policies don't lead to termination (eg constantly selecting "left").
 
-Sarsa would (somehow!?) learn such policies are bad during the episode, and switch to another one during the episode.
+Sarsa would learn such policies are bad during the episode, and switch to another one during the episode.
 
 Sarsa is a sample-based algorithm to solve the Bellman equation for action-values.
 
@@ -24,21 +30,25 @@ Sarsa is a sample-based algorithm to solve the Bellman equation for action-value
 
 ### Q-learning
 
-The 2nd Sarsa equation above is actually the Bellman action-value equation. As it has a weighted sum over next-state-actions, it's a bit more like Expected Sarsa than Sarsa.
-
 Q-learning was developed in 1989 and was one of the first online RL algorithms.
 
 Q-learning is a sample-based algorithm to solve the Bellman *optimality* equation for action-values.
 
 Unlike Sarsa, it doesn't need the next action taken - it selects the best possible next action.
 
+![wk4-Q-learning-off-policy.png](wk4-Q-learning-off-policy.png)
+
+Note the only difference from SARSA: the $max$ in the update line.  SARSA update uses the actual next action value, whereas Q-learning uses the best next action value.
+
 ![wk4-revisiting-bellman-equations.png](wk4-revisiting-bellman-equations.png)
+
+The 2nd Sarsa equation above is actually the Bellman action-value equation. As it has a weighted sum over next-state-actions, it's a bit more like Expected Sarsa than Sarsa.
 
 Sarsa is a sample-based version of policy iteration that which uses Bellman equations for action-values, and is dependent on a fixed policy.
 
 In contrast, because the *optimality* Bellman equation is used in Q-learning, $q_*$ is learned directly, eliminating the need for cycling between policy policy improvement / evaluation steps.
 
-Q-learnng is a sample-based version of value iteration which iteratively applies the Bellman optimality equation, which always improves the action-value function (unless already optimal).
+Q-learning is a sample-based version of value iteration which iteratively applies the Bellman optimality equation, which always improves the action-value function (unless already optimal).
 
 Just like value iteration will converge on the optimal solution, Q-learning will also converge to optimality as long as it continues to explore and samples all regions of the state-action space.
 
@@ -50,7 +60,8 @@ Sarsa uses the next action (even if not optimal), as part of its update target.
 
 ![wk4-windy-gridworld-parameter-study.png](wk4-windy-gridworld-parameter-study.png)
 
-With a smaller $\alpha = 0.1$, both perform equally (the gradients are parallel, episodes are comleted at the same rate).
+With a $\alpha = 0.5$, both perform similarly.
+With a smaller $\alpha = 0.1$, both perform equally eventually (the gradients are parallel, episodes are comleted at the same rate), but SARSA take a lot longer to catch up on rate of episode completion..
 
 ### How is Q-learning off-policy?
 
