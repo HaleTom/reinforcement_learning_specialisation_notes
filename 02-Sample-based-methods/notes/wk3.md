@@ -11,7 +11,8 @@ The special cases of TD methods introduced in chapter 6 should rightly be called
 We can classify TD control methods according to whether they deal with this complication by using an on-policy or off-policy approach:
 
 * Sarsa is an on-policy method.
-* Q-learning is an off-policy method.  Expected Sarsa is also an off-policy method as presented here.
+* Q-learning is an off-policy method.
+* Expected Sarsa is an off-policy method as presented here.
 
 ## Introduction to Temporal Difference Learning
 
@@ -23,19 +24,19 @@ The 2nd formula can be used to for an online update to the previous value of a s
 
 Note the LHS of the red box is drawn over the `[` (right square bracket)
 
-But $G_t$ (the MC update target) is the return from a full episode, meaning that we can't (yet) learn incrementally inside an episode.
+But $G_t$ (the MC update target) is the return from a full episode, meaning that we can't (yet) learn incrementally before episode completion.
 
 ![wk3-recursive-state-value-formula.png](wk3-recursive-state-value-formula.png)
 
 Above we replace $G_{t+1}$ with a recursively-defined value from $v$.
 
-The value of the next state is a stand-in for the value of the return until the end of the episode.  We don't need to wait until the end of the episode, but we do need to wait until the next step.
+The value of the next state is a stand-in for the value of the return until the end of the episode.  We don't need to wait until the end of the episode, only for the next reward and state to given by the environment.
 
 * The MC target is an estimate of the expected value (average of sampled return)
 * The DP target is an estimate because $v_\pi(S_{t+1})$ is not known
 * The TD target is an estimate for both reasons: a sample of the expected value of the reward, and the current estimate of $V_\pi(S_{t+1})$ rather than the true $v_\pi$.
 
-Like with MC, the update is a sample update, based on a single observed next state, unlike DP's update which is based on the expected value from the complete probability distribution of next states.
+Like with MC, the update is a sample update, based on a single observed next (state, reward), unlike DP's update which is based on the expected value from the complete probability distribution of all next (state, reward)s.
 
 MC targets generally have higher variance while TD(0) or one-step TD targets usually have lower variance.
 
@@ -46,9 +47,9 @@ MC targets generally have higher variance while TD(0) or one-step TD targets usu
 
 The highlighted terms are called the *TD error*, or $\delta_t$.  The first two of these are called the *TD target*.
 
-TD updates its estimate of one state towards its own estimate of the next state.  As the estimated value of the next state improves, so does our TD target.
+TD updates its estimate of one state based on its own estimate of the next state.  As the estimated value of the next state improves, so does our TD target.
 
-The TD error is depends on the next state and reward, and is only able to be calculated one step later in time.
+The TD error is depends on the next state and reward, and is only able to be calculated one step later in time, so the previous (state, action) needs to be remembered.
 
 
 ### TD(0) algorithm
@@ -59,7 +60,7 @@ TD(0) is called one-step TD, and is a special case of TD($\lambda$) and $n$-step
 
 Assume we are are looking from the perspective of state $S_{t+1}$. We've stored the state of the previous time step to be able to make our update to it. We have also observed the reward in the current state, coming from the action taken within the previous state.  We discount the current state's value by $\gamma$, add the observed reward and then treat that sum as the observed value of the previous state.
 
-In DP, we used the $p$ and $\pi$ to update based on all possible future states (and their transition returns).  Here we only use the next observed state and observed return.
+In DP, we used the $p$ and $\pi$ to update based on all possible future states (and their transition rewards).  Here we use only one observed next state reward.
 
 ![wk3-tabular-TD(0)-algorithm.png](wk3-tabular-TD0-algorithm.png)
 
@@ -75,9 +76,9 @@ Prediction learning is the most thoroughly *scalable* model-free learning.
 
 Training sets and an objective are not required, just waiting for the outcome.
 
-TD learning is a method specialised for learning to predict.
+TD learning is a method specialised for learning:
 
-* Widely used in RL to predict future reward (value functions)
+* Widely used in RL to predict future return (value functions)
 * Used in Sarsa, Q-learning, TD($\lambda$), Deep Q-learning, TD-Gammon, actor-critic methods, Samuel's Checker Player
   * (but not AlphaGo, helicopter autopilots, pure policy-based methods...)
 * Seems to be how brain reward signals work
@@ -98,7 +99,7 @@ TD is only relevant for multi-step prediction learning (with information possibl
 
 Supervised learning is not prediction learning in that the label tells the correct prediction, rather than wait-and-see.
 
-If the multi-step is a single step, then prediction reduces to the traditional supervised learning problem.
+If the multi-step case collapses to a single step, then prediction reduces to the traditional supervised learning problem.
 
 It's not possible to compose multi-step predictions from single-step predictions in practice: long-term predictions are exponentially complex and amplify small errors in one-step predictions.
 
@@ -114,7 +115,7 @@ Unlike with MC, we don't need to wait until the end of an episode - we can updat
 
 Thus, TD can be used in continuing tasks, but MC can't.
 
-MC must ignore or discount episodes where experimental actions are taken (the final return is used to update the state-action, rather than the reward).  TD learns from each and every transition, regardless of the subsequent actions taken.
+MC must ignore or discount episodes where later experimental actions are taken (the final return is used to update the state-action, rather than the immediate reward).  TD learns from each and every transition, regardless of the subsequent actions taken.
 
 Unlike DP, a model of the environment is is not required
 
@@ -126,11 +127,11 @@ TD asymptotically converges to the correct predictions, and usually does so fast
 
 With MC, the final return propagates back all the way to the beginning (discounted by $\gamma$).
 
-With TD, the update is only based on the difference between the estimated previous and discounted next-state values, and the return. If a reward is only given at the end of an episode, it propagates to only the penultimate state on the first episode, but on subsequent episodes, it will propagate back on any transition to any state that has been updated before.
+With TD, the update is only based on the difference between the estimated current and discounted next-state values, and the reward. Episode return propagates to only the penultimate state on the first episode, but on the next episode, it will propagate back one more state.
 
 ![wk3-RMS-error-TD-vs-MC.png](wk3-RMS-error-TD-vs-MC.png)
 
-The bottom right shows the random walk (policy is a coin toss of Left or Right in each state), with $\gamma = 1$, and no rewards =0 apart from a transition into the and right terminal state = 1.
+The bottom right shows the random walk (policy is a coin toss of Left or Right in each state), with $\gamma = 1$, and rewards $=0$ except transition into the right terminal state = 1.
 
 [The video](https://www.coursera.org/learn/sample-based-learning-methods/lecture/CEzFc/comparing-td-and-monte-carlo) seems to use $\alpha=0.5$ as the updated state's value moves half way to the next state's value.
 
@@ -192,7 +193,7 @@ Monte Carlo method is optimal only in a limited way, and TD is optimal in a way 
 
 MC batch updating gives a lower error based on the observed data, but TD batch updating gives a better estimate based on future expected data.
 
-Batch Monte Carlo methods always find the estimates that minimize mean-squared error on the training set, whereas batch TD(0) always finds the estimates that would be exactly correct for the maximum-likelihood model of the Markov process. In general, the maximum-likelihood estimate of a parameter is the parameter value whose probability of generating the data is greatest.
+Batch Monte Carlo methods always find the estimates that minimize mean-squared error on the training set, whereas batch TD(0) always finds the estimates that would be exactly correct for the maximum-likelihood model of the Markov process. In general, the maximum-likelihood estimate of a parameter is the value whose probability of generating the data is greatest.
 
 Batch TD(0) converges to the certainty-equivalence estimate.
 
