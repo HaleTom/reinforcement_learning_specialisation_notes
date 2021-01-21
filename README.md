@@ -16,6 +16,6 @@ I have lifted text and formulae liberally from the sources listed at the top of 
 
 2. Sample-based Learning Methods
   * [Weeks 1 & 2 - Welcome; Monte Carlo Methods for Prediction & Control](02-Sample-based-methods/notes/wk1-and-2.md)
-  * [Week 3 - Temporal Difference Learning Methods for Prediction](02-Sample-based-methods/notes/wk3.md) [WIP]
-  * [Week 4 - Temporal Difference Learning Methods for Control](02-Sample-based-methods/notes/wk4.md) [Not yet started]
+  * [Week 3 - Temporal Difference Learning Methods for Prediction](02-Sample-based-methods/notes/wk3.md)
+  * [Week 4 - Temporal Difference Learning Methods for Control](02-Sample-based-methods/notes/wk4.md) [WIP]
   * [Week 5 - Planning, Learning and Acting](02-Sample-based-methods/notes/wk5.md) [Not yet started]
