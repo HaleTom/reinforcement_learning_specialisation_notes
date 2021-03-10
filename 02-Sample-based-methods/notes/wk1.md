@@ -1,6 +1,5 @@
 # Sample-based Learning Methods
 
-
 # Week 1: Introduction
 
 This course is about learning from experience without *a priori* knowledge of the underlying MDP model.
