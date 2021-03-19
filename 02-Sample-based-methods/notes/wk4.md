@@ -182,6 +182,13 @@ After environment change, the model will remain inaccurate until the agent revis
 
 Dyna-Q+ adds this bonus to the planning updates, making older transitions appear more valuable to follow, and the model to be updated with the latest state-action value.
 
+If a transition has not been tried in $\tau(s,a)$ time steps, then planning updates are done as if the transition produced a reward of $r + \kappa \sqrt{ \tau(s,a)}$, for some small $\kappa$.
+
+Additionally in Dyna-Q+:
+
+* Actions never before taken in a previously observed state are now considered in the planning step
+* The initial model for all untried actions is that they lead back to the same state with a reward of zero
+
 With the initial maze, the increased exploration of Dyna-Q+ helps find a better policy quicker.
 
 After the RHS shortcut opens at time step 3000, Dyna-Q+ soon finds it when the bonus becomes large enough.  Dyna-Q would eventually find it by exploring the entire state-action space with backwards propagation, which would take a long time given a large $\epsilon$.
