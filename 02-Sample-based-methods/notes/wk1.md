@@ -261,7 +261,7 @@ $$v_\pi(s) = \mathbb{E}_b[\rho_{t:T-1} \cdot G_t | S_t = s] $$
 
 Note that $G_t$ is the return under the behaviour policy $b$, but the result is the expected return under the target policy $\pi$.
 
-#### Timestep notation
+#### Time step notation
 
 It's convenient to denote timesteps in a way which increases across episode boundaries, allowing us to reference time steps in different episodes with a single numerical interval.
 

@@ -183,6 +183,4 @@ Sarsa can do better than Q-learning when performance is measured online.  This i
 
 Expected Sarsa performed better than Sarsa across all step sizes measured because it mitigates the variance due to its own policy by taking the expectation over the next action.
 
-# TODO work out week numbers and .md notes numbers.  In coursera, I've completed all of week4 (minus the assignment which I can't)..  **** Also do summary reading from textbooik.
-
 [//]: # (This may be the most platform independent comment)
