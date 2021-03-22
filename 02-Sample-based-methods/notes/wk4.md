@@ -124,7 +124,7 @@ In each episode, exploration continues to occur, and the policy based on the und
 
 ![wk5-Q-planning](wk5-Q-planning.png)
 
-Random-sample one-step tabular Q-planning converges to the optimal policy for the model under the same conditions that one-step tabular Q-learning converges to the optimal policy for the real environment (each state–action pair must be selected an infinite number of times in Step 1, and $\alpha$ must decrease appropriately over time).
+Random-sample one-step tabular Q-planning converges to the optimal policy for the model under the same conditions that one-step tabular Q-learning converges to the optimal policy for the real environment (each state-action pair must be selected an infinite number of times in Step 1, and $\alpha$ must decrease appropriately over time).
 
 #### Describe the Tabular Dyna-Q algorithm
 
@@ -132,7 +132,7 @@ The Tabular Dyna-Q algorithm assumes deterministic transitions.  Both given a st
 
 Below, if we only do steps (a) to (d), we have an exact replica of Q-learning (direct RL).
 
-[!wk5-tabular-dyna-Q](wk5-tabular-dyna-Q.png)
+![wk5-tabular-dyna-Q](wk5-tabular-dyna-Q.png)
 
 Model learning: step (e).  This step and everything after concern model-based learning.
 
@@ -227,12 +227,11 @@ Planning, acting and model-learning interact in a circular fashion, and the proc
 
 In this chapter we have touched upon a number of dimensions of variation among state-space planning methods. One dimension is the variation in the size of updates. The smaller the updates, the more incremental the planning methods can be. Among the smallest updates are one-step sample updates, as in Dyna.
 
-Another important dimension is the distribution of updates, that is, of the focus of search. *Prioritized sweeping* focuses backward on the predecessors of states whose values have recently changed. *On-policy trajectory* sampling focuses on states or state–action pairs that the agent is likely to encounter when controlling its environment. This can allow computation to skip over parts of the state space that are irrelevant to the prediction or control problem.
+Another important dimension is the distribution of updates, that is, of the focus of search. *Prioritized sweeping* focuses backward on the predecessors of states whose values have recently changed. *On-policy trajectory* sampling focuses on states or state-action pairs that the agent is likely to encounter when controlling its environment. This can allow computation to skip over parts of the state space that are irrelevant to the prediction or control problem.
 
 Planning can also focus forward from pertinent states, such as states actually encountered during an agent-environment interaction. The most important form of this is when planning is done at decision time, that is, as part of the action-selection process. Classical heuristic search as studied in artificial intelligence is an example of this.
 
 Other examples are rollout algorithms and Monte Carlo Tree Search that benefit from online, incremental, sample-based value estimation and policy improvement.
-
 
 ## Tabular Solution Methods Summary
 
