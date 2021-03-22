@@ -40,11 +40,11 @@ These models contain more information, but can be difficult to specify and becom
 
 Distribution models can be used as sample models by drawing a samples based on the distribution of each outcome, but distribution models contain more information than is needed just to generate samples.
 
-## Explain why sample models can be represented more compactly than distribution models
+### Explain why sample models can be represented more compactly than distribution models, and their advantages and disadvantages
 
 Consider rolling 12 dice:
 
-### Sample models
+#### Sample models
 
 It's easy to generate a random int in [1...6] twelve times.
 
@@ -53,9 +53,7 @@ Joint probabilities are not necessary.
 * Require less memory
 * Can only estimate an expected outcome by averaging many samples
 
-## Describe the advantages and disadvantages of sample models and distribution models
-
-### Distribution models
+#### Distribution models
 Calculating joint probabilities of combinations is much more work: consider all possible outcomes of a set of dice and then the probability of each.  For 12 dice, there are over 2 billion combinations to consider.
 
 With the greater information, we can calculate an expected outcome or quantify the variability in outcomes.
@@ -217,7 +215,7 @@ The 2nd paper is particularly clear and easy to work through for the approach ju
 
 ## Quiz
 
-Use [randomdict](https://github.com/robtandy/randomdict) in python for fast $\mathscr O(1)$ dictionary look-ups.
+Use [randomdict](https://github.com/robtandy/randomdict) in python for fast $\mathcal O(1)$ dictionary look-ups.
 
 ![Quiz answers](wk5-quiz-answers.png)
 
