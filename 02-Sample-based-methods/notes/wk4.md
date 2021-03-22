@@ -213,6 +213,18 @@ The 2nd paper is particularly clear and easy to work through for the approach ju
 
 ![wk5-quadratic-approximation-resources](wk5-quadratic-approximation-resources.png)
 
+## Week summary
+
+![wk5-comparison-of-algorithms](wk5-comparison-of-algorithms.png)
+
+* Sarsa is on-policy - it estimates the value function for the policy that was followed
+* Q-Learning is off-policy - it estimates the value function for the optimal policy
+* Expected Sarsa can be on- or off- policy depending on the policy $\pi$ used.
+
+Q-learning is a special case of Expected Sarsa.
+
+![wk5-planning-summary](wk5-planning-summary.png)
+
 ## Quiz
 
 Use [randomdict](https://github.com/robtandy/randomdict) in python for fast $\mathcal O(1)$ dictionary look-ups.
