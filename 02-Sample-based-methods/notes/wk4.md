@@ -220,3 +220,35 @@ The 2nd paper is particularly clear and easy to work through for the approach ju
 Use [randomdict](https://github.com/robtandy/randomdict) in python for fast $\mathscr O(1)$ dictionary look-ups.
 
 ![Quiz answers](wk5-quiz-answers.png)
+
+## Chapter 8 Summary
+
+Planning, acting and model-learning interact in a circular fashion, and the processes can operate asynchronously and in parallel.  The division of computational resources is arbitrary and allocation can be based on whatever is most convenient and efficient for the task at hand.
+
+In this chapter we have touched upon a number of dimensions of variation among state-space planning methods. One dimension is the variation in the size of updates. The smaller the updates, the more incremental the planning methods can be. Among the smallest updates are one-step sample updates, as in Dyna.
+
+Another important dimension is the distribution of updates, that is, of the focus of search. *Prioritized sweeping* focuses backward on the predecessors of states whose values have recently changed. *On-policy trajectory* sampling focuses on states or state–action pairs that the agent is likely to encounter when controlling its environment. This can allow computation to skip over parts of the state space that are irrelevant to the prediction or control problem.
+
+Planning can also focus forward from pertinent states, such as states actually encountered during an agent-environment interaction. The most important form of this is when planning is done at decision time, that is, as part of the action-selection process. Classical heuristic search as studied in artificial intelligence is an example of this.
+
+Other examples are rollout algorithms and Monte Carlo Tree Search that benefit from online, incremental, sample-based value estimation and policy improvement.
+
+
+## Tabular Solution Methods Summary
+
+All of the methods we have explored so far in this book have three key ideas in common:
+
+1. They all seek to estimate value functions
+2. they all operate by backing up values along actual or possible state trajectories
+3. they all follow the general strategy of generalized policy iteration (GPI), meaning that they maintain an approximate value function and an approximate policy, and they continually try to improve each on the basis of the other.
+
+Dimensions in models:
+* Sample-based vs expected (distribution model) updates. This is the "width" of the update. Sample-based methods don't need a model at all (eg TD, Monte Carlo).
+* Depth of updates or degree of bootstrapping. TD - one step, Monte Carlo - the full episode.
+
+
+Between 1-step TD and Monte Carlo are $n$-step methods.
+
+Exhaustive search is in the deep and wide corner of the 2D-space. Dynamic programming is in the shallow and wide corner.  Between these two are heuristic search.
+
+A third dimension is on- vs off-policy methods.
