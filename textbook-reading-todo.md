@@ -1,6 +1,6 @@
-# [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book.html) TODO
+# Readings missed: [Reinforcement Learning: An Introduction](http://incompleteideas.net/book/the-book.html)
 
-## Chapter 6 - 
+## Chapter 6
 
 ### 6.7 Maximization Bias and Double Learning
 
