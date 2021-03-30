@@ -135,7 +135,13 @@ The derivative of a function says in which direction to increase a value to incr
 
 ![wk1-vector-gradient.png](wk1-vector-gradient.png)
 
-The gradient is a vector of partial derivitives, indicating how each value of $w$ affects the function.
+The gradient is a vector of partial derivitives, indicating how each value of $\bf w$ affects the function.
+
+For a linear value function (inner product of weights and features) we get the result that the change in value function w.r.t the weights is based on the values of the state features that are multiplied by the weights:
+
+![wk1-gradient-for-linear-value-function.png](wk1-gradient-for-linear-value-function.png)
+
+Algorithm and notable points:
 
 ![wk1-gradient-descent-algorithm](wk1-gradient-descent-algorithm.png)
 
@@ -157,7 +163,9 @@ The first step in gradient descent is to find the gradient of the objective func
 
 Gradient of MSVE w.r.t. weights of the approximator
 
-![]()  video 2:10
+![wk1-MSVE-gradient.png](wk1-MSVE-gradient.png)
+
+Top right of slide: for a linear (inner product) function, the gradient is the state feature vector (see above).
 
 Recall chain rule: if $h = f\big(g(x)\big)$, then ${\displaystyle h'(x)=f'\big(g(x)\big) \cdot g'(x)}$
 
@@ -165,10 +173,37 @@ We are taking the gradient w.r.t. $\bf w$, so $v_\pi(s)$ is a constant and is ig
 
 The negative in equation 3 comes from the $-\hat v(s, \mathbf w)$, and then is removed in the final equation to take a step down the gradient.
 
-#### Gradient Monte Carlo algorithm for value estimation
-#### Understand how state aggregation can be used to approximate the value function
-#### Apply Gradient Monte-Carlo with state aggregation
+Final proportionality sanity check: Assume the derivative of the approximated value function is positive. This means that changing the weights in the positive direction will increase the approximated value function. If the difference between the actual and approximated value is also positive (meaning the estimate is low), then increasing the weights will decrease that difference, and locally minimises the MSVE.
 
+![wk1-stochastic-gradient-descent.png](wk1-stochastic-gradient-descent.png)
+
+Summing over all states is generally not feasible, and we likely don't know the distrubution $\mu$.
+
+We approximate the gradient given in the formula.
+
+Imagine an idealised situation where we have access to $v_\pi$.  We don't need an explicit $\mu$ as we can sample states from it by following the policy.
+
+A stochastic gradient is noisy approximation, but far cheaper to compute still makes overall progress towards a minimum.  The expectation of each stochastic gradient equals the gradient of the objective.
+
+![wk1-gradient-monte-carlo.png](wk1-gradient-monte-carlo.png)
+
+The problem with the above is that we don't have access to $v_\pi$, so we replace it with an estimate - the return from the state.
+
+![wk1-gradient-monte-carlo-with-return.png](wk1-gradient-monte-carlo-with-return.png)
+
+The expectation of the gradient based on the sample is exactly the same using the true state value.
+
+The full algorithm:
+
+![wk1-gradient-monte-carlo-algorithm.png](wk1-gradient-monte-carlo-algorithm.png)
+
+#### State aggregation and approximation
+
+Imagine a random walk example: 1000 states, start in state 500 (the centre) and each transition moves uniform random between 1 and 100 states to either the left or right.
+
+XXX
+
+#### Apply Gradient Monte-Carlo with state aggregation
 
 
 ## TODO: complete notes for 9.3, 9.4
