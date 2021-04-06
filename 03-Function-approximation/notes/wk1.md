@@ -25,23 +25,24 @@ Ch 13: Policy-gradient methods, which approximate the optimal policy directly an
 
 ## Lesson 1: Estimating Value Functions as Supervised Learning
 
+We want a function to approximate a state-value, given that state as input.
+
 ### 9.1 Value function approximation
+
 Given that there are generally far fewer weights than states, a change in a weight affects many states. A better state approximation by the function will also affect many other states, some negatively.
 
 This generalisation is powerful, but can be difficult to manage and understand.
 
-Partially observable environments can be modelled by having the weights not depending on the unobservable parts of the environment.
+Partially observable environments can be modelled by having the weights not depending on the unobservable parts of the environment.  Memories of past observations can't be included in the state representation if this is the case.
 
-Memories of past observations can't be included in the state representation though.
-
-Function approximation methods expect to receive input-output examples of the function to be approximated, a.k.a. the supervised learning training examples.
+Function approximation methods expect to receive input-output examples of the function to be approximated, a.k.a. the supervised learning training examples.  The input is the state, and the "target" or label to be learned is $v_\pi(s)$.
 
 The most sophisticated artificial neural network and statistical methods all assume a static training set over which multiple passes are made. In reinforcement learning, however, it is important that learning be able to occur online, while the agent interacts with its environment or with a model of its environment.
 
-To do this requires methods that are able to learn eciently from incrementally acquired data. In addition, reinforcement learning generally requires function approximation methods able to handle nonstationary target functions (target functions that change over time).  TD and DP both bootstrap, so the update targets are nonstationary.
+To do this requires methods that are able to learn efficiently from incrementally acquired data. In addition, reinforcement learning generally requires function approximation methods able to handle nonstationary target functions (target functions that change over time).  TD and DP both bootstrap, so the update targets are nonstationary.
 
 ### 9.2 Prediction Objective
-When we make one state's estimation more accurate, we make other states' less accurate.  We need a way to know overall if we are moving in the right direction. We say which states we care most about via $\mu$, the weights of which sum to $1$, allowing for a *mean squared value error* objective function, $\overline{VE}$.
+When we make one state's estimation more accurate, we may make other states' less accurate.  We need a way to know overall if we are moving in the right direction. We say which states we care most about via $\mu$, the weights of which sum to $1$, allowing for a *mean squared value error* objective function, $\overline{\text{VE}}$.
 
 The square root of this is a rough measure of approximated value deviation from true values and is often used in plots.
 
@@ -58,7 +59,7 @@ $\bf w$ is a column vector (all vectors are assumed to be column vectors unless 
 ![wk1-linear-value-function-approximation](wk1-linear-value-function-approximation.png)
 Compactly, the approximation is the inner product of the weights and feature vector of the state.
 
-Our choice of feature limits the value functions we can represent.  We can only approximate functions that change linearly in terms of the features.  Consideration while constructing features may be necessary.
+Our choice of features limits the value functions we can represent.  Above, we can only approximate functions that change linearly in terms of the features.  Consideration while constructing features may be necessary.
 
 ### Recognize that the tabular case is a special case of linear value function approximation
 
@@ -101,7 +102,7 @@ In DL, the dataset is known before learning, and remains stationary while learni
 
 Some algorithms are also not designed for temporally correlated data, making them a poor choice for RL where this is always the case.
 
-TD methods introduce the bootstrapping problem: targets depend upon our current estimates, and both continually change.  There is no "ground truth" label as a target, and the examples also change.
+TD methods introduce the bootstrapping problem: targets depend upon our current estimates, and both continually change.  There is no unchanging "ground truth" label as a target.
 
 We need methods which work well with:
 * online updating
@@ -145,7 +146,7 @@ Algorithm and notable points:
 
 ![wk1-gradient-descent-algorithm](wk1-gradient-descent-algorithm.png)
 
-The objective is a function of $\hat v$, which in turn is a function of the weights, $\bf w$.
+The objective ($\overline{\text{VE}}$ is $J$ above) is a function of $\hat v$, which in turn is a function of the weights, $\bf w$.
 
 Here we assume a single weight in $\bf w$.
 
@@ -159,9 +160,7 @@ A global minimum doesn't correspond to the true value funciton, rather the best 
 
 #### Stochastic gradient descent
 
-The first step in gradient descent is to find the gradient of the objective function:
-
-Gradient of MSVE w.r.t. weights of the approximator
+The first step in gradient descent is to find the gradient of the objective function (eg MSVE) w.r.t. the weights of $\hat v(s, \textbf w)$:
 
 ![wk1-MSVE-gradient.png](wk1-MSVE-gradient.png)
 
@@ -171,9 +170,13 @@ Recall chain rule: if $h = f\big(g(x)\big)$, then ${\displaystyle h'(x)=f'\big(g
 
 We are taking the gradient w.r.t. $\bf w$, so $v_\pi(s)$ is a constant and is ignored.
 
-The negative in equation 3 comes from the $-\hat v(s, \mathbf w)$, and then is removed in the final equation to take a step down the gradient.
+The negative in equation 3 comes from the $-\hat v(s, \mathbf w)$, and then is removed in the final equation  to take a step down the gradient to decrease $J$.
 
-Final proportionality sanity check: Assume the derivative of the approximated value function is positive. This means that changing the weights in the positive direction will increase the approximated value function. If the difference between the actual and approximated value is also positive (meaning the estimate is low), then increasing the weights will decrease that difference, and locally minimises the MSVE.
+In final proportionality, note:
+* $2$ is removed and equality replaced with proportionality
+* triangle changes from nabla to delta
+
+Intuition / sanity check: Assume at a given point that the derivative of the approximated value function is positive. This means that changing the weights in the positive direction will increase the approximated value function. If the difference between the actual and approximated value is also positive (meaning the estimate is low), then increasing the weights will decrease that difference, and locally minimises the MSVE.
 
 ![wk1-stochastic-gradient-descent.png](wk1-stochastic-gradient-descent.png)
 
@@ -181,11 +184,13 @@ Summing over all states is generally not feasible, and we likely don't know the 
 
 We approximate the gradient given in the formula.
 
-Imagine an idealised situation where we have access to $v_\pi$.  We don't need an explicit $\mu$ as we can sample states from it by following the policy.
+Imagine an idealised situation where we have access to $v_\pi$.  We don't need an explicit $\mu$ as we can sample from it by following the policy.
 
-A stochastic gradient is noisy approximation, but far cheaper to compute still makes overall progress towards a minimum.  The expectation of each stochastic gradient equals the gradient of the objective.
+A stochastic gradient is noisy approximation, but far cheaper to compute and still makes overall progress towards a minimum.  The expectation of each stochastic gradient equals the gradient of the objective.
 
 ![wk1-gradient-monte-carlo.png](wk1-gradient-monte-carlo.png)
+
+The $2$ is removed and factored into the choice of $\alpha$.
 
 The problem with the above is that we don't have access to $v_\pi$, so we replace it with an estimate - the return from the state.
 
@@ -199,11 +204,21 @@ The full algorithm:
 
 #### State aggregation and approximation
 
-Imagine a random walk example: 1000 states, start in state 500 (the centre) and each transition moves uniform random between 1 and 100 states to either the left or right.
+Imagine a random walk example: 1000 states, start in state 500 (the centre) and each left/right action moves uniform random between 1 and 100 states in that direction. Policy is left or right with equal probability. Terminating on the left gives -1, and on the right +1. All other transitions have a reward of 0. No discount ($\gamma = 1$).
+
+The start state isn't exactly in the middle, (eg with 1, 2, 3, 4, picking start state 4 / 2 = 2 will be one left of the empty centre).
+
+#### Stage aggregation
+
+After grouping states, when we update the value of any state in a group, we update *all* the values in that group.  Groupings are based on a reason to believe that the group's values will be similar.:
+
+
+
+A one-hot vector describes which group the state belongs to.  The approximate value of a state is the ? inner produt of the one-hot vector and the feature vectors
 
 XXX
 
-#### Apply Gradient Monte-Carlo with state aggregation
+##### Apply Gradient Monte-Carlo with State Aggregation
 
 
 ## TODO: complete notes for 9.3, 9.4
