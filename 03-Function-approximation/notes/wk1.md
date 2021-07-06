@@ -25,11 +25,11 @@ Ch 13: Policy-gradient methods, which approximate the optimal policy directly an
 
 ## Lesson 1: Estimating Value Functions as Supervised Learning
 
-We want a function to approximate a state-value, given that state as input.
+We want a function to approximate a state-value, given the state as input.
 
 ### 9.1 Value function approximation
 
-Given that there are generally far fewer weights than states, a change in a weight affects many states. A better state approximation by the function will also affect many other states, some negatively.
+Given that there are generally far fewer weights than states, a change in a weight affects many states. A better state approximation by the function for one state will also affect many other states, some negatively.
 
 This generalisation is powerful, but can be difficult to manage and understand.
 
@@ -114,19 +114,21 @@ We need methods which work well with:
 
 We need to be able to quantify which set of weights produce a better approximaion of the value of a state.
 
-A natural choice is the squared error, or the squared (removes sign) difference between the value and estimation.
+A natural choice is the squared error: the squared (removes sign) difference between the value and estimation.
+
+$\mu(s)$ (shown in grey) denotes how much we care about the value of a particular state.  We want a closer approximation in common states and allow a higher error in states in which we spend little time.
 
 ![wk1-MSVE.png](wk1-MSVE.png)
 
 Making one state's estimate more accurate will often mean making another state less accurate.
-
-$\mu(s)$ (shown in grey) denotes how much we care about the value of a particular state.  We want a closer approximation in common states and allow a higher error in states in which we spend little time.
 
 We call this error $\overline{\text{VE}}$ or "V E Bar".
 
 Our goal is to adjust the weights to decrease $\overline{\text{VE}}$.
 
 ![wk1-VE-bar-formula.png](wk1-VE-bar-formula.png)
+
+The weighting of $\mu$ (sums to 1) approximates the "mean" part of the MSE.
 
 #### Gradient descent
 
@@ -144,9 +146,9 @@ For a linear value function (inner product of weights and features) we get the r
 
 Algorithm and notable points:
 
-![wk1-gradient-descent-algorithm](wk1-gradient-descent-algorithm.png)
+The objective ($\overline{\text{VE}}$ or $J$ below) is a function of $\hat v$, which in turn is a function of the weights, $\bf w$.
 
-The objective ($\overline{\text{VE}}$ is $J$ above) is a function of $\hat v$, which in turn is a function of the weights, $\bf w$.
+![wk1-gradient-descent-algorithm](wk1-gradient-descent-algorithm.png)
 
 Here we assume a single weight in $\bf w$.
 
@@ -166,7 +168,7 @@ The first step in gradient descent is to find the gradient of the objective func
 
 Top right of slide: for a linear (inner product) function, the gradient is the state feature vector (see above).
 
-Recall chain rule: if $h = f\big(g(x)\big)$, then ${\displaystyle h'(x)=f'\big(g(x)\big) \cdot g'(x)}$
+Recall chain rule: if $h = f\big(g(x)\big)$, then ${\displaystyle h'(x)=f'\big(g(x)\big) \cdot g'(x)}$.  Above, $f = x^2$ and $g = -x$
 
 We are taking the gradient w.r.t. $\bf w$, so $v_\pi(s)$ is a constant and is ignored.
 
@@ -182,7 +184,7 @@ Intuition / sanity check: Assume at a given point that the derivative of the app
 
 Summing over all states is generally not feasible, and we likely don't know the distrubution $\mu$.
 
-We approximate the gradient given in the formula.
+We approximate the gradient given in the formula:
 
 Imagine an idealised situation where we have access to $v_\pi$.  We don't need an explicit $\mu$ as we can sample from it by following the policy.
 
